@@ -1,3 +1,10 @@
+"""
+APMLive - Calculateur d'APM pour les joueurs
+Version: 1.0.0
+Développeur: erace
+Licence: MIT
+"""
+
 import time
 import threading
 import json
@@ -138,13 +145,24 @@ class APMCalculator:
         header_frame.pack(fill=tk.X, padx=20, pady=(20, 0))
         header_frame.pack_propagate(False)
         
-        # Container pour titre et bouton settings
+        # Container pour titre et boutons
         title_container = tk.Frame(header_frame, bg=self.colors['bg_primary'])
         title_container.pack(fill=tk.X, pady=(15, 5))
         
         # Titre principal
         title_label = ttk.Label(title_container, text="APM LIVE", style='Header.TLabel')
         title_label.pack(side=tk.LEFT)
+        
+        # Bouton À propos
+        about_btn = tk.Button(title_container, text="ℹ", 
+                            bg=self.colors['bg_tertiary'], 
+                            fg=self.colors['text_primary'],
+                            font=('Helvetica', 16),
+                            relief=tk.FLAT, bd=0,
+                            padx=10, pady=5,
+                            cursor='hand2',
+                            command=self.open_about)
+        about_btn.pack(side=tk.RIGHT, padx=(0, 10))
         
         # Bouton Settings
         settings_btn = tk.Button(title_container, text="⚙", 
@@ -174,6 +192,63 @@ class APMCalculator:
         self.status_label.pack(side=tk.LEFT, padx=(5, 0))
         
         self.status_dot = status_dot
+    
+    def open_about(self):
+        """Ouvrir la fenêtre À propos"""
+        about_window = tk.Toplevel(self.root)
+        about_window.title("À propos - APMLive")
+        about_window.geometry("400x300")
+        about_window.configure(bg=self.colors['bg_primary'])
+        about_window.resizable(False, False)
+        about_window.transient(self.root)
+        about_window.grab_set()
+        
+        # Titre
+        title_frame = tk.Frame(about_window, bg=self.colors['bg_primary'])
+        title_frame.pack(fill=tk.X, padx=20, pady=20)
+        
+        tk.Label(title_frame, text="APMLive", 
+                bg=self.colors['bg_primary'], 
+                fg=self.colors['text_primary'],
+                font=('Helvetica', 24, 'bold')).pack()
+        
+        tk.Label(title_frame, text="Version 1.0.0", 
+                bg=self.colors['bg_primary'], 
+                fg=self.colors['text_secondary'],
+                font=('Helvetica', 12)).pack(pady=(5, 0))
+        
+        # Informations
+        info_frame = tk.Frame(about_window, bg=self.colors['bg_secondary'])
+        info_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=(0, 20))
+        
+        info_text = """
+Développé par erace
+
+Un calculateur d'APM moderne et élégant
+pour les joueurs de jeux vidéo.
+
+Licence MIT
+© 2025 erace
+        """
+        
+        tk.Label(info_frame, text=info_text,
+                bg=self.colors['bg_secondary'],
+                fg=self.colors['text_primary'],
+                font=('Helvetica', 10),
+                justify=tk.CENTER).pack(pady=20)
+        
+        # Bouton Fermer
+        close_btn = tk.Button(about_window, text="Fermer",
+                            bg=self.colors['bg_tertiary'],
+                            fg=self.colors['text_primary'],
+                            font=('Helvetica', 10, 'bold'),
+                            relief=tk.FLAT,
+                            bd=0,
+                            padx=20,
+                            pady=10,
+                            cursor='hand2',
+                            command=about_window.destroy)
+        close_btn.pack(pady=(0, 20))
     
     def open_settings(self):
         """Ouvrir la fenêtre des paramètres"""

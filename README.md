@@ -6,6 +6,9 @@
 
 Un calculateur d'APM (Actions Per Minute) moderne et élégant pour les joueurs de jeux vidéo, streamers et créateurs de contenu.
 
+Développé par erace
+Version 1.0.0
+
 ![APMLive Interface](resources/images/image.png)
 
 ### 🌟 Fonctionnalités
@@ -54,7 +57,7 @@ Les données sont sauvegardées dans :
 
 ### 🤝 Contribution
 
-Ce projet est actuellement maintenu par un seul développeur. Si vous souhaitez contribuer, n'hésitez pas à :
+Ce projet est développé par erace. Si vous souhaitez contribuer, n'hésitez pas à :
 1. Fork le projet
 2. Créer une branche pour votre fonctionnalité
 3. Commiter vos changements
@@ -70,6 +73,9 @@ Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de 
 ## 🇬🇧 English
 
 A modern and elegant APM (Actions Per Minute) calculator for video game players, streamers, and content creators.
+
+Developed by erace
+Version 1.0.0
 
 ### 🌟 Features
 
@@ -117,7 +123,7 @@ Data is saved in:
 
 ### 🤝 Contributing
 
-This project is currently maintained by a single developer. If you'd like to contribute, feel free to:
+This project is developed by erace. If you'd like to contribute, feel free to:
 1. Fork the project
 2. Create a branch for your feature
 3. Commit your changes
