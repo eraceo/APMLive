@@ -1,8 +1,8 @@
-# APM Manager
+# APMLive
 
 Un calculateur d'APM (Actions Per Minute) moderne et élégant pour les joueurs de jeux vidéo, streamers et créateurs de contenu.
 
-![APM Manager Interface](https://i.imgur.com/placeholder.png)
+![APMLive Interface](https://i.imgur.com/placeholder.png)
 
 ## 🌟 Fonctionnalités
 
@@ -28,10 +28,10 @@ Un calculateur d'APM (Actions Per Minute) moderne et élégant pour les joueurs 
 
 ### Pour les utilisateurs
 
-1. Téléchargez la dernière version de l'installateur depuis la section [Releases](https://github.com/votre-username/apm-manager/releases)
-2. Exécutez `APM_Manager_Setup.exe`
+1. Téléchargez la dernière version de l'installateur depuis la section [Releases](https://github.com/votre-username/apmlive/releases)
+2. Exécutez `APMLive_Setup.exe`
 3. Suivez les instructions d'installation
-4. Lancez APM Manager depuis le menu démarrer ou le bureau
+4. Lancez APMLive depuis le menu démarrer ou le bureau
 
 ## 📊 Utilisation
 
@@ -40,13 +40,13 @@ Un calculateur d'APM (Actions Per Minute) moderne et élégant pour les joueurs 
 3. Jouez normalement à votre jeu
 4. Les statistiques se mettront à jour en temps réel
 5. Cliquez sur "STOP" pour arrêter l'enregistrement
-6. Les données sont automatiquement sauvegardées dans `%LOCALAPPDATA%\APM Manager`
+6. Les données sont automatiquement sauvegardées dans `%LOCALAPPDATA%\APMLive`
 
 ## 🔧 Configuration
 
 Les données sont sauvegardées dans :
-- `%LOCALAPPDATA%\APM Manager\apm_data.txt` (format texte)
-- `%LOCALAPPDATA%\APM Manager\apm_data.json` (format JSON)
+- `%LOCALAPPDATA%\APMLive\apm_data.txt` (format texte)
+- `%LOCALAPPDATA%\APMLive\apm_data.json` (format JSON)
 
 ## 🤝 Contribution
 
@@ -60,6 +60,5 @@ Les contributions sont les bienvenues ! N'hésitez pas à :
 ## 📝 Licence
 
 Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
-
 
 ⭐ N'hésitez pas à donner une étoile au projet si vous l'appréciez ! 

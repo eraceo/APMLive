@@ -20,7 +20,7 @@ class APMCalculator:
         self.update_interval = 1
         
         # Utiliser le dossier de données utilisateur
-        self.data_dir = os.path.join(os.getenv('LOCALAPPDATA'), 'APM Manager')
+        self.data_dir = os.path.join(os.getenv('LOCALAPPDATA'), 'APMLive')
         self.output_file = os.path.join(self.data_dir, "apm_data.txt")
         self.json_file = os.path.join(self.data_dir, "apm_data.json")
         
@@ -37,7 +37,7 @@ class APMCalculator:
     def setup_gui(self):
         """Créer l'interface graphique moderne"""
         self.root = tk.Tk()
-        self.root.title("APM Calculator Pro")
+        self.root.title("APMLive")
         self.root.geometry("400x500")
         self.root.configure(bg='#0d1117')
         self.root.resizable(False, False)
