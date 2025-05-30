@@ -54,7 +54,7 @@ Les données sont sauvegardées dans :
 
 ### 🤝 Contribution
 
-Les contributions sont les bienvenues ! N'hésitez pas à :
+Ce projet est actuellement maintenu par un seul développeur. Si vous souhaitez contribuer, n'hésitez pas à :
 1. Fork le projet
 2. Créer une branche pour votre fonctionnalité
 3. Commiter vos changements
@@ -117,7 +117,7 @@ Data is saved in:
 
 ### 🤝 Contributing
 
-Contributions are welcome! Feel free to:
+This project is currently maintained by a single developer. If you'd like to contribute, feel free to:
 1. Fork the project
 2. Create a branch for your feature
 3. Commit your changes
