@@ -2,7 +2,7 @@
 
 Un calculateur d'APM (Actions Per Minute) moderne et élégant pour les joueurs de jeux vidéo, streamers et créateurs de contenu.
 
-![APMLive Interface](https://i.imgur.com/placeholder.png)
+![APMLive Interface](image.png)
 
 ## 🌟 Fonctionnalités
 

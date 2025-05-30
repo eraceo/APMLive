@@ -117,7 +117,7 @@ class APMCalculator:
         header_frame.pack_propagate(False)
         
         # Titre principal
-        title_label = ttk.Label(header_frame, text="APM CALCULATOR", style='Header.TLabel')
+        title_label = ttk.Label(header_frame, text="APM LIVE", style='Header.TLabel')
         title_label.pack(pady=(15, 5))
         
         # Sous-titre
