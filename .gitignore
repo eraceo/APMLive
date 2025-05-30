@@ -1,0 +1,56 @@
+# Fichiers Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Fichiers PyInstaller
+*.spec
+build/
+dist/
+
+# Fichiers de données générés
+data/
+*.txt
+*.json
+
+# Fichiers d'environnement virtuel
+venv/
+env/
+ENV/
+
+# Fichiers IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Fichiers de build
+*.exe
+*.msi
+*.nsi
+*.bat
+
+# Fichiers de logs
+*.log
+
+# Fichiers temporaires
+*.tmp
+*.temp 
