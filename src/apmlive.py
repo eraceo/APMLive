@@ -15,6 +15,9 @@ class APMCalculator:
         self.session_start = time.time()
         self.running = False
         
+        # Ajouter pour tracker les touches enfoncées
+        self.pressed_keys = set()
+        
         # Configuration
         self.window_size = 60
         self.update_interval = 1
@@ -430,10 +433,29 @@ class APMCalculator:
             on_scroll=self.on_action
         )
         
+        # Modifier le keyboard listener pour gérer press ET release
         self.keyboard_listener = keyboard.Listener(
-            on_press=self.on_action,
-            on_release=None
+            on_press=self.on_key_press,
+            on_release=self.on_key_release
         )
+    
+    def on_key_press(self, key):
+        """Gérer l'appui sur une touche (ne compter qu'une fois)"""
+        if self.running:
+            # Convertir la touche en string pour la comparaison
+            key_str = str(key)
+            
+            # Ne compter que si la touche n'était pas déjà enfoncée
+            if key_str not in self.pressed_keys:
+                self.pressed_keys.add(key_str)
+                self.on_action()
+    
+    def on_key_release(self, key):
+        """Gérer le relâchement d'une touche"""
+        if self.running:
+            key_str = str(key)
+            # Retirer la touche de l'ensemble des touches enfoncées
+            self.pressed_keys.discard(key_str)
         
     def on_action(self, *args):
         """Enregistrer une action"""
@@ -581,6 +603,9 @@ class APMCalculator:
         self.total_actions = 0
         self.current_apm = 0
         self.session_start = time.time()
+        
+        # Vider les touches enfoncées
+        self.pressed_keys.clear()
         
         self.apm_label.config(text="0")
         self.total_label.config(text="0")
