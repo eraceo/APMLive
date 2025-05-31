@@ -1,8 +1,8 @@
 """
-APMLive - Calculateur d'APM pour les joueurs
+APMLive - APM Calculator for Gamers
 Version: 1.0.0
-Développeur: erace
-Licence: MIT
+Developer: erace
+License: MIT
 """
 
 import time
@@ -22,14 +22,14 @@ class APMCalculator:
         self.session_start = time.time()
         self.running = False
         
-        # Ajouter pour tracker les touches enfoncées
+        # Add for key tracking
         self.pressed_keys = set()
         
         # Configuration
         self.window_size = 60
         self.update_interval = 1
         
-        # Settings pour export TXT
+        # TXT export settings
         self.txt_settings = {
             'apm': True,
             'total_actions': True,
@@ -39,46 +39,46 @@ class APMCalculator:
             'timestamp': False
         }
         
-        # Utiliser le dossier de données utilisateur
+        # Use user data directory
         self.data_dir = os.path.join(os.getenv('LOCALAPPDATA'), 'APMLive')
         self.output_file = os.path.join(self.data_dir, "apm_data.txt")
         self.json_file = os.path.join(self.data_dir, "apm_data.json")
         self.settings_file = os.path.join(self.data_dir, "settings.json")
         
-        # Créer le dossier de données s'il n'existe pas
+        # Create data directory if it doesn't exist
         if not os.path.exists(self.data_dir):
             os.makedirs(self.data_dir)
         
-        # Charger les settings
+        # Load settings
         self.load_settings()
         
-        # Interface graphique
+        # GUI setup
         self.setup_gui()
         
-        # Démarrage des listeners
+        # Start listeners
         self.start_listeners()
         
     def load_settings(self):
-        """Charger les paramètres depuis le fichier"""
+        """Load settings from file"""
         try:
             if os.path.exists(self.settings_file):
                 with open(self.settings_file, 'r') as f:
                     saved_settings = json.load(f)
                     self.txt_settings.update(saved_settings.get('txt_export', {}))
         except Exception as e:
-            print(f"Erreur lors du chargement des settings: {e}")
+            print(f"Error loading settings: {e}")
     
     def save_settings(self):
-        """Sauvegarder les paramètres"""
+        """Save settings"""
         try:
             settings_data = {'txt_export': self.txt_settings}
             with open(self.settings_file, 'w') as f:
                 json.dump(settings_data, f, indent=2)
         except Exception as e:
-            print(f"Erreur lors de la sauvegarde des settings: {e}")
+            print(f"Error saving settings: {e}")
         
     def setup_gui(self):
-        """Créer l'interface graphique moderne"""
+        """Create modern GUI"""
         self.root = tk.Tk()
         self.root.title("APMLive")
         self.root.geometry("400x550")
@@ -105,7 +105,7 @@ class APMCalculator:
         self.create_footer()
         
     def setup_styles(self):
-        """Configuration des styles modernes"""
+        """Configure modern styles"""
         style = ttk.Style()
         style.theme_use('clam')
         
@@ -140,20 +140,20 @@ class APMCalculator:
                        foreground=self.colors['text_secondary'])
     
     def create_header(self):
-        """Créer le header moderne"""
+        """Create modern header"""
         header_frame = tk.Frame(self.root, bg=self.colors['bg_primary'], height=80)
         header_frame.pack(fill=tk.X, padx=20, pady=(20, 0))
         header_frame.pack_propagate(False)
         
-        # Container pour titre et boutons
+        # Container for title and buttons
         title_container = tk.Frame(header_frame, bg=self.colors['bg_primary'])
         title_container.pack(fill=tk.X, pady=(15, 5))
         
-        # Titre principal
+        # Main title
         title_label = ttk.Label(title_container, text="APM LIVE", style='Header.TLabel')
         title_label.pack(side=tk.LEFT)
         
-        # Bouton À propos
+        # About button
         about_btn = tk.Button(title_container, text="ℹ", 
                             bg=self.colors['bg_tertiary'], 
                             fg=self.colors['text_primary'],
@@ -164,7 +164,7 @@ class APMCalculator:
                             command=self.open_about)
         about_btn.pack(side=tk.RIGHT, padx=(0, 10))
         
-        # Bouton Settings
+        # Settings button
         settings_btn = tk.Button(title_container, text="⚙", 
                                bg=self.colors['bg_tertiary'], 
                                fg=self.colors['text_primary'],
@@ -175,7 +175,7 @@ class APMCalculator:
                                command=self.open_settings)
         settings_btn.pack(side=tk.RIGHT)
         
-        # Sous-titre
+        # Subtitle
         subtitle_frame = tk.Frame(header_frame, bg=self.colors['bg_primary'])
         subtitle_frame.pack()
         
@@ -194,16 +194,16 @@ class APMCalculator:
         self.status_dot = status_dot
     
     def open_about(self):
-        """Ouvrir la fenêtre À propos"""
+        """Open About window"""
         about_window = tk.Toplevel(self.root)
-        about_window.title("À propos - APMLive")
+        about_window.title("About - APMLive")
         about_window.geometry("400x300")
         about_window.configure(bg=self.colors['bg_primary'])
         about_window.resizable(False, False)
         about_window.transient(self.root)
         about_window.grab_set()
         
-        # Titre
+        # Title
         title_frame = tk.Frame(about_window, bg=self.colors['bg_primary'])
         title_frame.pack(fill=tk.X, padx=20, pady=20)
         
@@ -217,17 +217,17 @@ class APMCalculator:
                 fg=self.colors['text_secondary'],
                 font=('Helvetica', 12)).pack(pady=(5, 0))
         
-        # Informations
+        # Information
         info_frame = tk.Frame(about_window, bg=self.colors['bg_secondary'])
         info_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=(0, 20))
         
         info_text = """
-Développé par erace
+Created by erace
 
-Un calculateur d'APM moderne et élégant
-pour les joueurs de jeux vidéo.
+A simple yet powerful APM calculator
+for gamers who want to track their performance.
 
-Licence MIT
+MIT License
 © 2025 erace
         """
         
@@ -237,8 +237,8 @@ Licence MIT
                 font=('Helvetica', 10),
                 justify=tk.CENTER).pack(pady=20)
         
-        # Bouton Fermer
-        close_btn = tk.Button(about_window, text="Fermer",
+        # Close button
+        close_btn = tk.Button(about_window, text="Close",
                             bg=self.colors['bg_tertiary'],
                             fg=self.colors['text_primary'],
                             font=('Helvetica', 10, 'bold'),
@@ -251,47 +251,47 @@ Licence MIT
         close_btn.pack(pady=(0, 20))
     
     def open_settings(self):
-        """Ouvrir la fenêtre des paramètres"""
+        """Open settings window"""
         settings_window = tk.Toplevel(self.root)
-        settings_window.title("Settings - Export TXT")
+        settings_window.title("Settings - TXT Export")
         settings_window.geometry("450x550")
         settings_window.configure(bg=self.colors['bg_primary'])
         settings_window.resizable(False, False)
         settings_window.transient(self.root)
         settings_window.grab_set()
         
-        # Titre
+        # Title
         title_frame = tk.Frame(settings_window, bg=self.colors['bg_primary'])
         title_frame.pack(fill=tk.X, padx=20, pady=20)
         
-        tk.Label(title_frame, text="Export TXT Configuration", 
+        tk.Label(title_frame, text="TXT Export Configuration", 
                 bg=self.colors['bg_primary'], 
                 fg=self.colors['text_primary'],
                 font=('Helvetica', 16, 'bold')).pack()
         
-        tk.Label(title_frame, text="Choisissez les données à inclure dans le fichier TXT", 
+        tk.Label(title_frame, text="Choose which data to include in the TXT file", 
                 bg=self.colors['bg_primary'], 
                 fg=self.colors['text_secondary'],
                 font=('Helvetica', 9)).pack(pady=(5, 0))
         
-        # Conteneur des options
+        # Options container
         options_frame = tk.Frame(settings_window, bg=self.colors['bg_secondary'])
         options_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=(0, 20))
         
-        # Variables pour les checkboxes
+        # Variables for checkboxes
         self.setting_vars = {}
         
-        # Options disponibles
+        # Available options
         options = [
-            ('apm', 'APM Actuel', 'Actions par minute en temps réel'),
-            ('total_actions', 'Total Actions', 'Nombre total d\'actions'),
-            ('session_time', 'Temps Session', 'Durée de la session'),
-            ('avg_apm', 'APM Moyen', 'APM moyen de la session'),
-            ('actions_per_second', 'Actions/sec', 'Actions par seconde'),
-            ('timestamp', 'Timestamp', 'Horodatage Unix')
+            ('apm', 'Current APM', 'Actions per minute in real-time'),
+            ('total_actions', 'Total Actions', 'Total number of actions'),
+            ('session_time', 'Session Time', 'Session duration'),
+            ('avg_apm', 'Average APM', 'Average APM for the session'),
+            ('actions_per_second', 'Actions/sec', 'Actions per second'),
+            ('timestamp', 'Timestamp', 'Unix timestamp')
         ]
         
-        tk.Label(options_frame, text="Options d'export:", 
+        tk.Label(options_frame, text="Export options:", 
                 bg=self.colors['bg_secondary'], 
                 fg=self.colors['text_primary'],
                 font=('Helvetica', 12, 'bold')).pack(pady=(15, 10), anchor='w', padx=15)
@@ -325,7 +325,7 @@ Licence MIT
                     fg=self.colors['text_secondary'],
                     font=('Helvetica', 8)).pack(anchor='w')
         
-        # Boutons
+        # Buttons
         button_frame = tk.Frame(settings_window, bg=self.colors['bg_primary'])
         button_frame.pack(fill=tk.X, padx=20, pady=(0, 20))
         
@@ -347,14 +347,14 @@ Licence MIT
             'cursor': 'hand2'
         }
         
-        cancel_btn = tk.Button(button_frame, text="Annuler", 
+        cancel_btn = tk.Button(button_frame, text="Cancel", 
                               bg=self.colors['bg_tertiary'], 
                               fg=self.colors['text_primary'],
                               command=cancel,
                               **button_style)
         cancel_btn.pack(side=tk.RIGHT, padx=(10, 0))
         
-        save_btn = tk.Button(button_frame, text="Sauvegarder", 
+        save_btn = tk.Button(button_frame, text="Save", 
                             bg=self.colors['success'], 
                             fg='white',
                             command=save_and_close,
@@ -362,11 +362,11 @@ Licence MIT
         save_btn.pack(side=tk.RIGHT)
     
     def create_metrics_section(self):
-        """Créer la section des métriques principales"""
+        """Create main metrics section"""
         metrics_frame = tk.Frame(self.root, bg=self.colors['bg_primary'])
         metrics_frame.pack(fill=tk.X, padx=20, pady=20)
         
-        # Carte APM
+        # APM card
         apm_card = tk.Frame(metrics_frame, bg=self.colors['bg_secondary'], 
                            relief=tk.FLAT, bd=1)
         apm_card.pack(fill=tk.X, pady=(0, 15))
@@ -378,11 +378,11 @@ Licence MIT
         self.apm_label = ttk.Label(apm_card, text="0", style='Metric.TLabel')
         self.apm_label.pack(pady=(0, 15))
         
-        # Cartes des statistiques en ligne
+        # Stats cards in line
         stats_row = tk.Frame(metrics_frame, bg=self.colors['bg_primary'])
         stats_row.pack(fill=tk.X)
         
-        # Carte Total Actions
+        # Total Actions card
         total_card = tk.Frame(stats_row, bg=self.colors['bg_tertiary'])
         total_card.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 7))
         
@@ -390,7 +390,7 @@ Licence MIT
         self.total_label = ttk.Label(total_card, text="0", style='Stat.TLabel')
         self.total_label.pack(pady=(0, 12))
         
-        # Carte Session Time
+        # Session Time card
         time_card = tk.Frame(stats_row, bg=self.colors['bg_tertiary'])
         time_card.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(7, 0))
         
@@ -399,7 +399,7 @@ Licence MIT
         self.time_label.pack(pady=(0, 12))
     
     def create_stats_section(self):
-        """Créer la section des statistiques détaillées"""
+        """Create detailed stats section"""
         stats_frame = tk.Frame(self.root, bg=self.colors['bg_secondary'])
         stats_frame.pack(fill=tk.X, padx=20, pady=(0, 20))
         
@@ -411,7 +411,7 @@ Licence MIT
         grid_frame = tk.Frame(stats_frame, bg=self.colors['bg_secondary'])
         grid_frame.pack(padx=15, pady=(0, 15))
         
-        # APM Moyen
+        # Average APM
         avg_frame = tk.Frame(grid_frame, bg=self.colors['bg_secondary'])
         avg_frame.pack(fill=tk.X, pady=2)
         
@@ -426,7 +426,7 @@ Licence MIT
                                      font=('Helvetica', 10, 'bold'))
         self.avg_apm_label.pack(side=tk.RIGHT)
         
-        # Actions/sec
+        # Actions per second
         aps_frame = tk.Frame(grid_frame, bg=self.colors['bg_secondary'])
         aps_frame.pack(fill=tk.X, pady=2)
         
@@ -442,7 +442,7 @@ Licence MIT
         self.aps_label.pack(side=tk.RIGHT)
     
     def create_controls_section(self):
-        """Créer la section des contrôles"""
+        """Create controls section"""
         controls_frame = tk.Frame(self.root, bg=self.colors['bg_primary'])
         controls_frame.pack(fill=tk.X, padx=20, pady=(0, 20))
         
@@ -484,56 +484,56 @@ Licence MIT
         self.reset_button.pack(side=tk.LEFT)
     
     def create_footer(self):
-        """Créer le footer"""
+        """Create footer"""
         footer_frame = tk.Frame(self.root, bg=self.colors['bg_primary'])
         footer_frame.pack(fill=tk.X, side=tk.BOTTOM, padx=20, pady=(0, 15))
         
         ttk.Label(footer_frame, 
-                 text=f"Données sauvegardées dans {self.data_dir}", 
+                 text=f"Data saved in {self.data_dir}", 
                  style='Footer.TLabel').pack()
         
         ttk.Label(footer_frame, 
-                 text="Calcul basé sur une fenêtre glissante de 60 secondes", 
+                 text="Calculation based on a 60-second sliding window", 
                  style='Footer.TLabel').pack()
         
     def start_listeners(self):
-        """Initialiser les listeners pour souris et clavier"""
+        """Initialize mouse and keyboard listeners"""
         self.mouse_listener = None
         self.keyboard_listener = None
         
     def create_listeners(self):
-        """Créer de nouveaux listeners"""
+        """Create new listeners"""
         self.mouse_listener = mouse.Listener(
             on_click=self.on_action,
             on_scroll=self.on_action
         )
         
-        # Modifier le keyboard listener pour gérer press ET release
+        # Modify keyboard listener to handle press AND release
         self.keyboard_listener = keyboard.Listener(
             on_press=self.on_key_press,
             on_release=self.on_key_release
         )
     
     def on_key_press(self, key):
-        """Gérer l'appui sur une touche (ne compter qu'une fois)"""
+        """Handle key press (count only once)"""
         if self.running:
-            # Convertir la touche en string pour la comparaison
+            # Convert key to string for comparison
             key_str = str(key)
             
-            # Ne compter que si la touche n'était pas déjà enfoncée
+            # Only count if key wasn't already pressed
             if key_str not in self.pressed_keys:
                 self.pressed_keys.add(key_str)
                 self.on_action()
     
     def on_key_release(self, key):
-        """Gérer le relâchement d'une touche"""
+        """Handle key release"""
         if self.running:
             key_str = str(key)
-            # Retirer la touche de l'ensemble des touches enfoncées
+            # Remove key from pressed keys set
             self.pressed_keys.discard(key_str)
         
     def on_action(self, *args):
-        """Enregistrer une action"""
+        """Record an action"""
         if self.running:
             current_time = time.time()
             self.actions.append(current_time)
@@ -543,7 +543,7 @@ Licence MIT
                 self.actions.popleft()
     
     def calculate_apm(self):
-        """Calculer les APM actuels"""
+        """Calculate current APM"""
         if not self.actions:
             return 0
         
@@ -560,14 +560,14 @@ Licence MIT
         return round(apm, 1)
     
     def calculate_average_apm(self):
-        """Calculer l'APM moyen de la session"""
+        """Calculate session average APM"""
         session_duration = time.time() - self.session_start
         if session_duration > 0:
             return round((self.total_actions / session_duration) * 60, 1)
         return 0
     
     def calculate_aps(self):
-        """Calculer les actions par seconde"""
+        """Calculate actions per second"""
         if not self.actions:
             return 0
         
@@ -578,7 +578,7 @@ Licence MIT
         return round(recent_actions / 10, 1)
     
     def update_display(self):
-        """Mettre à jour l'affichage"""
+        """Update display"""
         if self.running:
             self.current_apm = self.calculate_apm()
             avg_apm = self.calculate_average_apm()
@@ -601,9 +601,9 @@ Licence MIT
         self.root.after(self.update_interval * 1000, self.update_display)
     
     def write_to_files(self):
-        """Écrire les données dans les fichiers de sortie"""
+        """Write data to output files"""
         try:
-            # Export TXT personnalisé
+            # Custom TXT export
             txt_content = []
             if self.txt_settings['apm']:
                 txt_content.append(f"APM: {self.current_apm}")
@@ -622,7 +622,7 @@ Licence MIT
             with open(self.output_file, 'w', encoding='utf-8') as f:
                 f.write('\n'.join(txt_content))
             
-            # Export JSON complet
+            # Complete JSON export
             data = {
                 "apm": self.current_apm,
                 "total_actions": self.total_actions,
@@ -636,10 +636,10 @@ Licence MIT
                 json.dump(data, f, indent=2)
                 
         except Exception as e:
-            print(f"Erreur lors de l'écriture: {e}")
+            print(f"Error writing to files: {e}")
     
     def start_recording(self):
-        """Démarrer l'enregistrement"""
+        """Start recording"""
         if not self.running:
             self.running = True
             self.session_start = time.time()
@@ -653,10 +653,10 @@ Licence MIT
             self.status_label.config(text="RECORDING", fg=self.colors['success'])
             self.status_dot.config(fg=self.colors['success'])
             
-            print("Enregistrement démarré...")
+            print("Recording started...")
     
     def stop_recording(self):
-        """Arrêter l'enregistrement"""
+        """Stop recording"""
         if self.running:
             self.running = False
             
@@ -670,16 +670,16 @@ Licence MIT
             self.status_label.config(text="OFFLINE", fg=self.colors['text_secondary'])
             self.status_dot.config(fg=self.colors['danger'])
             
-            print("Enregistrement arrêté.")
+            print("Recording stopped.")
     
     def reset_data(self):
-        """Réinitialiser les données"""
+        """Reset data"""
         self.actions.clear()
         self.total_actions = 0
         self.current_apm = 0
         self.session_start = time.time()
         
-        # Vider les touches enfoncées
+        # Clear pressed keys
         self.pressed_keys.clear()
         
         self.apm_label.config(text="0")
@@ -694,10 +694,10 @@ Licence MIT
         except:
             pass
         
-        print("Données réinitialisées.")
+        print("Data reset.")
     
     def run(self):
-        """Lancer l'application"""
+        """Run the application"""
         self.update_display()
         
         try:
@@ -710,12 +710,12 @@ if __name__ == "__main__":
     try:
         import pynput
     except ImportError:
-        print("Installation de pynput...")
+        print("Installing pynput...")
         os.system("pip install pynput")
         import pynput
     
-    print("Démarrage du calculateur APM Pro...")
-    print("Interface moderne chargée - Données exportées vers apm_data.txt")
+    print("Starting APM Pro calculator...")
+    print("Modern interface loaded - Data exported to apm_data.txt")
     
     app = APMCalculator()
     app.run()
