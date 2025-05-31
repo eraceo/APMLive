@@ -6,7 +6,7 @@
     name="erace.APMLive"
     type="win32"
   />
-  <description>APMLive - Calculateur d'APM pour les joueurs par erace</description>
+  <description>APMLive - Calculateur d'APM</description>
   <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
     <security>
       <requestedPrivileges>
