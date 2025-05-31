@@ -28,6 +28,8 @@ dist/
 # Fichiers de données générés
 data/
 *.txt
+!requirements.txt
+!version_info.txt
 *.json
 
 # Fichiers d'environnement virtuel
@@ -53,4 +55,10 @@ ENV/
 
 # Fichiers temporaires
 *.tmp
-*.temp 
+*.temp
+
+# Fichiers spécifiques au projet
+APMLive.exe
+
+# Polices
+Roboto/ 

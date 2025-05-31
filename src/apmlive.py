@@ -13,6 +13,10 @@ from collections import deque
 import tkinter as tk
 from tkinter import ttk
 import os
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib
+matplotlib.use('TkAgg')
 
 class APMCalculator:
     def __init__(self):
@@ -28,6 +32,10 @@ class APMCalculator:
         # Configuration
         self.window_size = 60
         self.update_interval = 1
+        
+        # Graph data
+        self.apm_history = deque(maxlen=60)  # Store last 60 seconds of APM
+        self.time_history = deque(maxlen=60)  # Store timestamps
         
         # TXT export settings
         self.txt_settings = {
@@ -81,25 +89,26 @@ class APMCalculator:
         """Create modern GUI"""
         self.root = tk.Tk()
         self.root.title("APMLive")
-        self.root.geometry("400x550")
-        self.root.configure(bg='#0d1117')
+        self.root.geometry("600x800")  # Réduction de la hauteur de la fenêtre
+        self.root.configure(bg='#121212')  # Fond sombre
         self.root.resizable(False, False)
         
         self.colors = {
-            'bg_primary': '#0d1117',
-            'bg_secondary': '#161b22',
-            'bg_tertiary': '#21262d',
-            'accent': '#58a6ff',
-            'success': '#238636',
-            'danger': '#da3633',
-            'text_primary': '#f0f6fc',
-            'text_secondary': '#7d8590',
-            'border': '#30363d'
+            'bg_primary': '#121212',      # Fond principal sombre
+            'bg_secondary': '#1E1E1E',    # Fond secondaire sombre
+            'bg_tertiary': '#2D2D2D',     # Fond tertiaire sombre
+            'accent': '#4285F4',          # Bleu techno sombre
+            'success': '#00A67C',         # Vert APM sombre
+            'danger': '#FF79B0',          # Rose punchy sombre
+            'text_primary': '#F1F1F1',    # Texte principal sombre
+            'text_secondary': '#AAAAAA',  # Texte secondaire sombre
+            'border': '#333333'           # Bordure sombre
         }
         
         self.setup_styles()
         self.create_header()
         self.create_metrics_section()
+        self.create_graph_section()
         self.create_stats_section()
         self.create_controls_section()
         self.create_footer()
@@ -110,39 +119,39 @@ class APMCalculator:
         style.theme_use('clam')
         
         style.configure('Header.TLabel', 
-                       font=('Helvetica', 24, 'bold'),
+                       font=('Roboto', 24, 'bold'),
                        background=self.colors['bg_primary'],
                        foreground=self.colors['text_primary'])
         
         style.configure('Metric.TLabel',
-                       font=('Helvetica', 28, 'bold'),
+                       font=('Roboto', 28, 'bold'),
                        background=self.colors['bg_secondary'],
                        foreground=self.colors['accent'])
         
         style.configure('MetricTitle.TLabel',
-                       font=('Helvetica', 10, 'normal'),
+                       font=('Roboto', 10, 'normal'),
                        background=self.colors['bg_secondary'],
                        foreground=self.colors['text_secondary'])
         
         style.configure('Stat.TLabel',
-                       font=('Helvetica', 14, 'bold'),
+                       font=('Roboto', 14, 'bold'),
                        background=self.colors['bg_tertiary'],
                        foreground=self.colors['text_primary'])
         
         style.configure('StatTitle.TLabel',
-                       font=('Helvetica', 9, 'normal'),
+                       font=('Roboto', 9, 'normal'),
                        background=self.colors['bg_tertiary'],
                        foreground=self.colors['text_secondary'])
         
         style.configure('Footer.TLabel',
-                       font=('Helvetica', 8, 'normal'),
+                       font=('Roboto', 8, 'normal'),
                        background=self.colors['bg_primary'],
                        foreground=self.colors['text_secondary'])
     
     def create_header(self):
         """Create modern header"""
-        header_frame = tk.Frame(self.root, bg=self.colors['bg_primary'], height=80)
-        header_frame.pack(fill=tk.X, padx=20, pady=(20, 0))
+        header_frame = tk.Frame(self.root, bg=self.colors['bg_primary'], height=60)  # Réduction de la hauteur du header
+        header_frame.pack(fill=tk.X, padx=20, pady=(10, 0))  # Réduction du padding vertical
         header_frame.pack_propagate(False)
         
         # Container for title and buttons
@@ -157,7 +166,7 @@ class APMCalculator:
         about_btn = tk.Button(title_container, text="ℹ", 
                             bg=self.colors['bg_tertiary'], 
                             fg=self.colors['text_primary'],
-                            font=('Helvetica', 16),
+                            font=('Roboto', 16),
                             relief=tk.FLAT, bd=0,
                             padx=10, pady=5,
                             cursor='hand2',
@@ -168,7 +177,7 @@ class APMCalculator:
         settings_btn = tk.Button(title_container, text="⚙", 
                                bg=self.colors['bg_tertiary'], 
                                fg=self.colors['text_primary'],
-                               font=('Helvetica', 16),
+                               font=('Roboto', 16),
                                relief=tk.FLAT, bd=0,
                                padx=10, pady=5,
                                cursor='hand2',
@@ -182,13 +191,13 @@ class APMCalculator:
         status_dot = tk.Label(subtitle_frame, text="●", 
                              bg=self.colors['bg_primary'], 
                              fg=self.colors['danger'], 
-                             font=('Helvetica', 12))
+                             font=('Roboto', 12))
         status_dot.pack(side=tk.LEFT)
         
         self.status_label = tk.Label(subtitle_frame, text="OFFLINE", 
                                    bg=self.colors['bg_primary'], 
                                    fg=self.colors['text_secondary'],
-                                   font=('Helvetica', 10, 'bold'))
+                                   font=('Roboto', 10, 'bold'))
         self.status_label.pack(side=tk.LEFT, padx=(5, 0))
         
         self.status_dot = status_dot
@@ -210,12 +219,12 @@ class APMCalculator:
         tk.Label(title_frame, text="APMLive", 
                 bg=self.colors['bg_primary'], 
                 fg=self.colors['text_primary'],
-                font=('Helvetica', 24, 'bold')).pack()
+                font=('Roboto', 24, 'bold')).pack()
         
         tk.Label(title_frame, text="Version 1.0.0", 
                 bg=self.colors['bg_primary'], 
                 fg=self.colors['text_secondary'],
-                font=('Helvetica', 12)).pack(pady=(5, 0))
+                font=('Roboto', 12)).pack(pady=(5, 0))
         
         # Information
         info_frame = tk.Frame(about_window, bg=self.colors['bg_secondary'])
@@ -234,14 +243,14 @@ MIT License
         tk.Label(info_frame, text=info_text,
                 bg=self.colors['bg_secondary'],
                 fg=self.colors['text_primary'],
-                font=('Helvetica', 10),
+                font=('Roboto', 10),
                 justify=tk.CENTER).pack(pady=20)
         
         # Close button
         close_btn = tk.Button(about_window, text="Close",
                             bg=self.colors['bg_tertiary'],
                             fg=self.colors['text_primary'],
-                            font=('Helvetica', 10, 'bold'),
+                            font=('Roboto', 10, 'bold'),
                             relief=tk.FLAT,
                             bd=0,
                             padx=20,
@@ -267,12 +276,12 @@ MIT License
         tk.Label(title_frame, text="TXT Export Configuration", 
                 bg=self.colors['bg_primary'], 
                 fg=self.colors['text_primary'],
-                font=('Helvetica', 16, 'bold')).pack()
+                font=('Roboto', 16, 'bold')).pack()
         
         tk.Label(title_frame, text="Choose which data to include in the TXT file", 
                 bg=self.colors['bg_primary'], 
                 fg=self.colors['text_secondary'],
-                font=('Helvetica', 9)).pack(pady=(5, 0))
+                font=('Roboto', 9)).pack(pady=(5, 0))
         
         # Options container
         options_frame = tk.Frame(settings_window, bg=self.colors['bg_secondary'])
@@ -294,7 +303,7 @@ MIT License
         tk.Label(options_frame, text="Export options:", 
                 bg=self.colors['bg_secondary'], 
                 fg=self.colors['text_primary'],
-                font=('Helvetica', 12, 'bold')).pack(pady=(15, 10), anchor='w', padx=15)
+                font=('Roboto', 12, 'bold')).pack(pady=(15, 10), anchor='w', padx=15)
         
         for key, title, desc in options:
             option_frame = tk.Frame(options_frame, bg=self.colors['bg_secondary'])
@@ -309,7 +318,7 @@ MIT License
                                     fg=self.colors['text_primary'],
                                     selectcolor=self.colors['bg_tertiary'],
                                     activebackground=self.colors['bg_secondary'],
-                                    font=('Helvetica', 10, 'bold'))
+                                    font=('Roboto', 10, 'bold'))
             checkbox.pack(side=tk.LEFT)
             
             info_frame = tk.Frame(option_frame, bg=self.colors['bg_secondary'])
@@ -318,12 +327,12 @@ MIT License
             tk.Label(info_frame, text=title, 
                     bg=self.colors['bg_secondary'], 
                     fg=self.colors['text_primary'],
-                    font=('Helvetica', 10, 'bold')).pack(anchor='w')
+                    font=('Roboto', 10, 'bold')).pack(anchor='w')
             
             tk.Label(info_frame, text=desc, 
                     bg=self.colors['bg_secondary'], 
                     fg=self.colors['text_secondary'],
-                    font=('Helvetica', 8)).pack(anchor='w')
+                    font=('Roboto', 8)).pack(anchor='w')
         
         # Buttons
         button_frame = tk.Frame(settings_window, bg=self.colors['bg_primary'])
@@ -339,7 +348,7 @@ MIT License
             settings_window.destroy()
         
         button_style = {
-            'font': ('Helvetica', 10, 'bold'),
+            'font': ('Roboto', 10, 'bold'),
             'relief': tk.FLAT,
             'bd': 0,
             'padx': 20,
@@ -364,19 +373,19 @@ MIT License
     def create_metrics_section(self):
         """Create main metrics section"""
         metrics_frame = tk.Frame(self.root, bg=self.colors['bg_primary'])
-        metrics_frame.pack(fill=tk.X, padx=20, pady=20)
+        metrics_frame.pack(fill=tk.X, padx=20, pady=10)  # Réduction du padding vertical
         
         # APM card
         apm_card = tk.Frame(metrics_frame, bg=self.colors['bg_secondary'], 
                            relief=tk.FLAT, bd=1)
-        apm_card.pack(fill=tk.X, pady=(0, 15))
+        apm_card.pack(fill=tk.X, pady=(0, 10))  # Réduction du padding vertical
         
         border_frame = tk.Frame(apm_card, bg=self.colors['border'], height=1)
         border_frame.pack(fill=tk.X, side=tk.BOTTOM)
         
-        ttk.Label(apm_card, text="ACTIONS PER MINUTE", style='MetricTitle.TLabel').pack(pady=(15, 5))
+        ttk.Label(apm_card, text="ACTIONS PER MINUTE", style='MetricTitle.TLabel').pack(pady=(10, 2))  # Réduction du padding vertical
         self.apm_label = ttk.Label(apm_card, text="0", style='Metric.TLabel')
-        self.apm_label.pack(pady=(0, 15))
+        self.apm_label.pack(pady=(0, 10))  # Réduction du padding vertical
         
         # Stats cards in line
         stats_row = tk.Frame(metrics_frame, bg=self.colors['bg_primary'])
@@ -398,15 +407,56 @@ MIT License
         self.time_label = ttk.Label(time_card, text="00:00:00", style='Stat.TLabel')
         self.time_label.pack(pady=(0, 12))
     
+    def create_graph_section(self):
+        """Create real-time graph section"""
+        graph_frame = tk.Frame(self.root, bg=self.colors['bg_secondary'])
+        graph_frame.pack(fill=tk.X, padx=20, pady=(0, 10))  # Réduction du padding vertical
+        
+        # Title
+        tk.Label(graph_frame, text="APM HISTORY", 
+                bg=self.colors['bg_secondary'], 
+                fg=self.colors['text_secondary'],
+                font=('Roboto', 9, 'bold')).pack(pady=(15, 10))
+        
+        # Create matplotlib figure
+        self.fig = plt.Figure(figsize=(8, 2.5), dpi=100)  # Réduction de la hauteur du graphique
+        self.fig.patch.set_facecolor(self.colors['bg_secondary'])
+        
+        # Create subplot
+        self.ax = self.fig.add_subplot(111)
+        self.ax.set_facecolor(self.colors['bg_secondary'])
+        self.ax.tick_params(colors=self.colors['text_secondary'])
+        self.ax.spines['bottom'].set_color(self.colors['border'])
+        self.ax.spines['top'].set_color(self.colors['border'])
+        self.ax.spines['left'].set_color(self.colors['border'])
+        self.ax.spines['right'].set_color(self.colors['border'])
+        
+        # Create line plot
+        self.line, = self.ax.plot([], [], color=self.colors['accent'], linewidth=2)
+        
+        # Configure axes
+        self.ax.set_ylim(0, 100)  # Start with 0-100 APM range
+        self.ax.set_xlim(0, 60)   # Show last 60 seconds
+        self.ax.grid(True, color=self.colors['border'], linestyle='--', alpha=0.3)
+        
+        # Add labels
+        self.ax.set_xlabel('Time (seconds)', color=self.colors['text_secondary'], fontsize=8)
+        self.ax.set_ylabel('APM', color=self.colors['text_secondary'], fontsize=8)
+        
+        # Create canvas
+        self.canvas = FigureCanvasTkAgg(self.fig, master=graph_frame)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True, padx=15, pady=(0, 15))
+    
     def create_stats_section(self):
         """Create detailed stats section"""
         stats_frame = tk.Frame(self.root, bg=self.colors['bg_secondary'])
-        stats_frame.pack(fill=tk.X, padx=20, pady=(0, 20))
+        stats_frame.pack(fill=tk.X, padx=20, pady=(0, 10))  # Réduction du padding vertical
         
         tk.Label(stats_frame, text="PERFORMANCE METRICS", 
                 bg=self.colors['bg_secondary'], 
                 fg=self.colors['text_secondary'],
-                font=('Helvetica', 9, 'bold')).pack(pady=(15, 10))
+                font=('Roboto', 9, 'bold')).pack(pady=(15, 10))
         
         grid_frame = tk.Frame(stats_frame, bg=self.colors['bg_secondary'])
         grid_frame.pack(padx=15, pady=(0, 15))
@@ -418,12 +468,12 @@ MIT License
         tk.Label(avg_frame, text="Avg APM:", 
                 bg=self.colors['bg_secondary'], 
                 fg=self.colors['text_secondary'],
-                font=('Helvetica', 10)).pack(side=tk.LEFT)
+                font=('Roboto', 10)).pack(side=tk.LEFT)
         
         self.avg_apm_label = tk.Label(avg_frame, text="0", 
                                      bg=self.colors['bg_secondary'], 
                                      fg=self.colors['text_primary'],
-                                     font=('Helvetica', 10, 'bold'))
+                                     font=('Roboto', 10, 'bold'))
         self.avg_apm_label.pack(side=tk.RIGHT)
         
         # Actions per second
@@ -433,24 +483,24 @@ MIT License
         tk.Label(aps_frame, text="Actions/sec:", 
                 bg=self.colors['bg_secondary'], 
                 fg=self.colors['text_secondary'],
-                font=('Helvetica', 10)).pack(side=tk.LEFT)
+                font=('Roboto', 10)).pack(side=tk.LEFT)
         
         self.aps_label = tk.Label(aps_frame, text="0.0", 
                                  bg=self.colors['bg_secondary'], 
                                  fg=self.colors['text_primary'],
-                                 font=('Helvetica', 10, 'bold'))
+                                 font=('Roboto', 10, 'bold'))
         self.aps_label.pack(side=tk.RIGHT)
     
     def create_controls_section(self):
         """Create controls section"""
         controls_frame = tk.Frame(self.root, bg=self.colors['bg_primary'])
-        controls_frame.pack(fill=tk.X, padx=20, pady=(0, 20))
+        controls_frame.pack(fill=tk.X, padx=20, pady=(0, 10))  # Réduction du padding vertical
         
         button_frame = tk.Frame(controls_frame, bg=self.colors['bg_primary'])
         button_frame.pack()
         
         button_style = {
-            'font': ('Helvetica', 11, 'bold'),
+            'font': ('Roboto', 11, 'bold'),
             'relief': tk.FLAT,
             'bd': 0,
             'padx': 25,
@@ -461,7 +511,7 @@ MIT License
         self.start_button = tk.Button(button_frame, text="START", 
                                      bg=self.colors['success'], 
                                      fg='white',
-                                     activebackground='#2ea043',
+                                     activebackground='#00C896',
                                      command=self.start_recording,
                                      **button_style)
         self.start_button.pack(side=tk.LEFT, padx=(0, 10))
@@ -469,7 +519,7 @@ MIT License
         self.stop_button = tk.Button(button_frame, text="STOP", 
                                     bg=self.colors['danger'], 
                                     fg='white',
-                                    activebackground='#f85149',
+                                    activebackground='#FF4081',
                                     command=self.stop_recording,
                                     state='disabled',
                                     **button_style)
@@ -486,7 +536,7 @@ MIT License
     def create_footer(self):
         """Create footer"""
         footer_frame = tk.Frame(self.root, bg=self.colors['bg_primary'])
-        footer_frame.pack(fill=tk.X, side=tk.BOTTOM, padx=20, pady=(0, 15))
+        footer_frame.pack(fill=tk.X, side=tk.BOTTOM, padx=20, pady=(0, 10))  # Réduction du padding vertical
         
         ttk.Label(footer_frame, 
                  text=f"Data saved in {self.data_dir}", 
@@ -504,7 +554,7 @@ MIT License
     def create_listeners(self):
         """Create new listeners"""
         self.mouse_listener = mouse.Listener(
-            on_click=self.on_action,
+            on_click=lambda x, y, button, pressed: self.on_action() if pressed else None,
             on_scroll=self.on_action
         )
         
@@ -584,17 +634,39 @@ MIT License
             avg_apm = self.calculate_average_apm()
             aps = self.calculate_aps()
             
+            # Update labels
             self.apm_label.config(text=str(int(self.current_apm)))
             self.total_label.config(text=str(self.total_actions))
             self.avg_apm_label.config(text=str(int(avg_apm)))
             self.aps_label.config(text=str(aps))
             
+            # Update session time
             session_time = int(time.time() - self.session_start)
             hours = session_time // 3600
             minutes = (session_time % 3600) // 60
             seconds = session_time % 60
             time_str = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
             self.time_label.config(text=time_str)
+            
+            # Update graph
+            current_time = time.time() - self.session_start
+            self.apm_history.append(self.current_apm)
+            self.time_history.append(current_time)
+            
+            # Update line data
+            self.line.set_data(list(self.time_history), list(self.apm_history))
+            
+            # Adjust y-axis if needed
+            max_apm = max(self.apm_history) if self.apm_history else 100
+            y_max = max(100, (max_apm // 100 + 1) * 100)  # Round up to nearest 100
+            self.ax.set_ylim(0, y_max)
+            
+            # Adjust x-axis to show last 60 seconds
+            x_min = max(0, current_time - 60)
+            self.ax.set_xlim(x_min, current_time)
+            
+            # Redraw canvas
+            self.canvas.draw()
             
             self.write_to_files()
         
@@ -682,6 +754,15 @@ MIT License
         # Clear pressed keys
         self.pressed_keys.clear()
         
+        # Clear graph data
+        self.apm_history.clear()
+        self.time_history.clear()
+        self.line.set_data([], [])
+        self.ax.set_ylim(0, 100)
+        self.ax.set_xlim(0, 60)
+        self.canvas.draw()
+        
+        # Reset labels
         self.apm_label.config(text="0")
         self.total_label.config(text="0")
         self.avg_apm_label.config(text="0")
@@ -714,8 +795,8 @@ if __name__ == "__main__":
         os.system("pip install pynput")
         import pynput
     
-    print("Starting APM Pro calculator...")
-    print("Modern interface loaded - Data exported to apm_data.txt")
+    print("Starting APMLive...")
+    print("Interface loaded - Data exported to apm_data.txt")
     
     app = APMCalculator()
     app.run()
