@@ -18,7 +18,6 @@ Version 1.0.0
   - Temps de session
   - Total des actions
 - Export des données (texte et JSON)
-- Compatible OBS
 - Sauvegarde automatique
 - Installation Windows
 
@@ -81,7 +80,6 @@ Version 1.0.0
   - Session time
   - Total actions
 - Data export (text and JSON)
-- OBS compatibility
 - Automatic saving
 - Windows installation
 
