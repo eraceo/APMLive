@@ -89,20 +89,20 @@ class APMCalculator:
         """Create modern GUI"""
         self.root = tk.Tk()
         self.root.title("APMLive")
-        self.root.geometry("600x800")  # Réduction de la hauteur de la fenêtre
-        self.root.configure(bg='#121212')  # Fond sombre
+        self.root.geometry("600x800")
+        self.root.configure(bg='#121212')  # Dark background
         self.root.resizable(False, False)
         
         self.colors = {
-            'bg_primary': '#121212',      # Fond principal sombre
-            'bg_secondary': '#1E1E1E',    # Fond secondaire sombre
-            'bg_tertiary': '#2D2D2D',     # Fond tertiaire sombre
-            'accent': '#4285F4',          # Bleu techno sombre
-            'success': '#00A67C',         # Vert APM sombre
-            'danger': '#FF79B0',          # Rose punchy sombre
-            'text_primary': '#F1F1F1',    # Texte principal sombre
-            'text_secondary': '#AAAAAA',  # Texte secondaire sombre
-            'border': '#333333'           # Bordure sombre
+            'bg_primary': '#121212',      # Main dark background
+            'bg_secondary': '#1E1E1E',    # Secondary dark background
+            'bg_tertiary': '#2D2D2D',     # Tertiary dark background
+            'accent': '#4285F4',          # Dark tech blue
+            'success': '#00A67C',         # Dark APM green
+            'danger': '#FF79B0',          # Dark punchy pink
+            'text_primary': '#F1F1F1',    # Main dark text
+            'text_secondary': '#AAAAAA',  # Secondary dark text
+            'border': '#333333'           # Dark border
         }
         
         self.setup_styles()
@@ -150,19 +150,16 @@ class APMCalculator:
     
     def create_header(self):
         """Create modern header"""
-        header_frame = tk.Frame(self.root, bg=self.colors['bg_primary'], height=60)  # Réduction de la hauteur du header
-        header_frame.pack(fill=tk.X, padx=20, pady=(10, 0))  # Réduction du padding vertical
+        header_frame = tk.Frame(self.root, bg=self.colors['bg_primary'], height=60)
+        header_frame.pack(fill=tk.X, padx=20, pady=(10, 0))
         header_frame.pack_propagate(False)
         
-        # Container for title and buttons
         title_container = tk.Frame(header_frame, bg=self.colors['bg_primary'])
         title_container.pack(fill=tk.X, pady=(15, 5))
         
-        # Main title
         title_label = ttk.Label(title_container, text="APM LIVE", style='Header.TLabel')
         title_label.pack(side=tk.LEFT)
         
-        # About button
         about_btn = tk.Button(title_container, text="ℹ", 
                             bg=self.colors['bg_tertiary'], 
                             fg=self.colors['text_primary'],
@@ -173,7 +170,6 @@ class APMCalculator:
                             command=self.open_about)
         about_btn.pack(side=tk.RIGHT, padx=(0, 10))
         
-        # Settings button
         settings_btn = tk.Button(title_container, text="⚙", 
                                bg=self.colors['bg_tertiary'], 
                                fg=self.colors['text_primary'],
@@ -184,7 +180,6 @@ class APMCalculator:
                                command=self.open_settings)
         settings_btn.pack(side=tk.RIGHT)
         
-        # Subtitle
         subtitle_frame = tk.Frame(header_frame, bg=self.colors['bg_primary'])
         subtitle_frame.pack()
         
@@ -212,7 +207,6 @@ class APMCalculator:
         about_window.transient(self.root)
         about_window.grab_set()
         
-        # Title
         title_frame = tk.Frame(about_window, bg=self.colors['bg_primary'])
         title_frame.pack(fill=tk.X, padx=20, pady=20)
         
@@ -226,7 +220,6 @@ class APMCalculator:
                 fg=self.colors['text_secondary'],
                 font=('Roboto', 12)).pack(pady=(5, 0))
         
-        # Information
         info_frame = tk.Frame(about_window, bg=self.colors['bg_secondary'])
         info_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=(0, 20))
         
@@ -246,7 +239,6 @@ MIT License
                 font=('Roboto', 10),
                 justify=tk.CENTER).pack(pady=20)
         
-        # Close button
         close_btn = tk.Button(about_window, text="Close",
                             bg=self.colors['bg_tertiary'],
                             fg=self.colors['text_primary'],
@@ -269,7 +261,6 @@ MIT License
         settings_window.transient(self.root)
         settings_window.grab_set()
         
-        # Title
         title_frame = tk.Frame(settings_window, bg=self.colors['bg_primary'])
         title_frame.pack(fill=tk.X, padx=20, pady=20)
         
@@ -283,14 +274,11 @@ MIT License
                 fg=self.colors['text_secondary'],
                 font=('Roboto', 9)).pack(pady=(5, 0))
         
-        # Options container
         options_frame = tk.Frame(settings_window, bg=self.colors['bg_secondary'])
         options_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=(0, 20))
         
-        # Variables for checkboxes
         self.setting_vars = {}
         
-        # Available options
         options = [
             ('apm', 'Current APM', 'Actions per minute in real-time'),
             ('total_actions', 'Total Actions', 'Total number of actions'),
@@ -334,7 +322,6 @@ MIT License
                     fg=self.colors['text_secondary'],
                     font=('Roboto', 8)).pack(anchor='w')
         
-        # Buttons
         button_frame = tk.Frame(settings_window, bg=self.colors['bg_primary'])
         button_frame.pack(fill=tk.X, padx=20, pady=(0, 20))
         
@@ -373,25 +360,22 @@ MIT License
     def create_metrics_section(self):
         """Create main metrics section"""
         metrics_frame = tk.Frame(self.root, bg=self.colors['bg_primary'])
-        metrics_frame.pack(fill=tk.X, padx=20, pady=10)  # Réduction du padding vertical
+        metrics_frame.pack(fill=tk.X, padx=20, pady=10)
         
-        # APM card
         apm_card = tk.Frame(metrics_frame, bg=self.colors['bg_secondary'], 
                            relief=tk.FLAT, bd=1)
-        apm_card.pack(fill=tk.X, pady=(0, 10))  # Réduction du padding vertical
+        apm_card.pack(fill=tk.X, pady=(0, 10))
         
         border_frame = tk.Frame(apm_card, bg=self.colors['border'], height=1)
         border_frame.pack(fill=tk.X, side=tk.BOTTOM)
         
-        ttk.Label(apm_card, text="ACTIONS PER MINUTE", style='MetricTitle.TLabel').pack(pady=(10, 2))  # Réduction du padding vertical
+        ttk.Label(apm_card, text="ACTIONS PER MINUTE", style='MetricTitle.TLabel').pack(pady=(10, 2))
         self.apm_label = ttk.Label(apm_card, text="0", style='Metric.TLabel')
-        self.apm_label.pack(pady=(0, 10))  # Réduction du padding vertical
+        self.apm_label.pack(pady=(0, 10))
         
-        # Stats cards in line
         stats_row = tk.Frame(metrics_frame, bg=self.colors['bg_primary'])
         stats_row.pack(fill=tk.X)
         
-        # Total Actions card
         total_card = tk.Frame(stats_row, bg=self.colors['bg_tertiary'])
         total_card.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 7))
         
@@ -399,7 +383,6 @@ MIT License
         self.total_label = ttk.Label(total_card, text="0", style='Stat.TLabel')
         self.total_label.pack(pady=(0, 12))
         
-        # Session Time card
         time_card = tk.Frame(stats_row, bg=self.colors['bg_tertiary'])
         time_card.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(7, 0))
         
@@ -410,19 +393,16 @@ MIT License
     def create_graph_section(self):
         """Create real-time graph section"""
         graph_frame = tk.Frame(self.root, bg=self.colors['bg_secondary'])
-        graph_frame.pack(fill=tk.X, padx=20, pady=(0, 10))  # Réduction du padding vertical
+        graph_frame.pack(fill=tk.X, padx=20, pady=(0, 10))
         
-        # Title
         tk.Label(graph_frame, text="APM HISTORY", 
                 bg=self.colors['bg_secondary'], 
                 fg=self.colors['text_secondary'],
                 font=('Roboto', 9, 'bold')).pack(pady=(15, 10))
         
-        # Create matplotlib figure
-        self.fig = plt.Figure(figsize=(8, 2.5), dpi=100)  # Réduction de la hauteur du graphique
+        self.fig = plt.Figure(figsize=(8, 2.5), dpi=100)
         self.fig.patch.set_facecolor(self.colors['bg_secondary'])
         
-        # Create subplot
         self.ax = self.fig.add_subplot(111)
         self.ax.set_facecolor(self.colors['bg_secondary'])
         self.ax.tick_params(colors=self.colors['text_secondary'])
@@ -431,19 +411,15 @@ MIT License
         self.ax.spines['left'].set_color(self.colors['border'])
         self.ax.spines['right'].set_color(self.colors['border'])
         
-        # Create line plot
         self.line, = self.ax.plot([], [], color=self.colors['accent'], linewidth=2)
         
-        # Configure axes
-        self.ax.set_ylim(0, 100)  # Start with 0-100 APM range
-        self.ax.set_xlim(0, 60)   # Show last 60 seconds
+        self.ax.set_ylim(0, 100)
+        self.ax.set_xlim(0, 60)
         self.ax.grid(True, color=self.colors['border'], linestyle='--', alpha=0.3)
         
-        # Add labels
         self.ax.set_xlabel('Time (seconds)', color=self.colors['text_secondary'], fontsize=8)
         self.ax.set_ylabel('APM', color=self.colors['text_secondary'], fontsize=8)
         
-        # Create canvas
         self.canvas = FigureCanvasTkAgg(self.fig, master=graph_frame)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True, padx=15, pady=(0, 15))
@@ -451,7 +427,7 @@ MIT License
     def create_stats_section(self):
         """Create detailed stats section"""
         stats_frame = tk.Frame(self.root, bg=self.colors['bg_secondary'])
-        stats_frame.pack(fill=tk.X, padx=20, pady=(0, 10))  # Réduction du padding vertical
+        stats_frame.pack(fill=tk.X, padx=20, pady=(0, 10))
         
         tk.Label(stats_frame, text="PERFORMANCE METRICS", 
                 bg=self.colors['bg_secondary'], 
@@ -461,7 +437,6 @@ MIT License
         grid_frame = tk.Frame(stats_frame, bg=self.colors['bg_secondary'])
         grid_frame.pack(padx=15, pady=(0, 15))
         
-        # Average APM
         avg_frame = tk.Frame(grid_frame, bg=self.colors['bg_secondary'])
         avg_frame.pack(fill=tk.X, pady=2)
         
@@ -476,7 +451,6 @@ MIT License
                                      font=('Roboto', 10, 'bold'))
         self.avg_apm_label.pack(side=tk.RIGHT)
         
-        # Actions per second
         aps_frame = tk.Frame(grid_frame, bg=self.colors['bg_secondary'])
         aps_frame.pack(fill=tk.X, pady=2)
         
@@ -494,7 +468,7 @@ MIT License
     def create_controls_section(self):
         """Create controls section"""
         controls_frame = tk.Frame(self.root, bg=self.colors['bg_primary'])
-        controls_frame.pack(fill=tk.X, padx=20, pady=(0, 10))  # Réduction du padding vertical
+        controls_frame.pack(fill=tk.X, padx=20, pady=(0, 10))
         
         button_frame = tk.Frame(controls_frame, bg=self.colors['bg_primary'])
         button_frame.pack()
@@ -536,7 +510,7 @@ MIT License
     def create_footer(self):
         """Create footer"""
         footer_frame = tk.Frame(self.root, bg=self.colors['bg_primary'])
-        footer_frame.pack(fill=tk.X, side=tk.BOTTOM, padx=20, pady=(0, 10))  # Réduction du padding vertical
+        footer_frame.pack(fill=tk.X, side=tk.BOTTOM, padx=20, pady=(0, 10))
         
         ttk.Label(footer_frame, 
                  text=f"Data saved in {self.data_dir}", 
@@ -545,7 +519,7 @@ MIT License
         ttk.Label(footer_frame, 
                  text="Calculation based on a 60-second sliding window", 
                  style='Footer.TLabel').pack()
-        
+    
     def start_listeners(self):
         """Initialize mouse and keyboard listeners"""
         self.mouse_listener = None
@@ -558,7 +532,6 @@ MIT License
             on_scroll=self.on_action
         )
         
-        # Modify keyboard listener to handle press AND release
         self.keyboard_listener = keyboard.Listener(
             on_press=self.on_key_press,
             on_release=self.on_key_release
@@ -567,10 +540,8 @@ MIT License
     def on_key_press(self, key):
         """Handle key press (count only once)"""
         if self.running:
-            # Convert key to string for comparison
             key_str = str(key)
             
-            # Only count if key wasn't already pressed
             if key_str not in self.pressed_keys:
                 self.pressed_keys.add(key_str)
                 self.on_action()
@@ -579,7 +550,6 @@ MIT License
         """Handle key release"""
         if self.running:
             key_str = str(key)
-            # Remove key from pressed keys set
             self.pressed_keys.discard(key_str)
         
     def on_action(self, *args):
@@ -634,13 +604,11 @@ MIT License
             avg_apm = self.calculate_average_apm()
             aps = self.calculate_aps()
             
-            # Update labels
             self.apm_label.config(text=str(int(self.current_apm)))
             self.total_label.config(text=str(self.total_actions))
             self.avg_apm_label.config(text=str(int(avg_apm)))
             self.aps_label.config(text=str(aps))
             
-            # Update session time
             session_time = int(time.time() - self.session_start)
             hours = session_time // 3600
             minutes = (session_time % 3600) // 60
@@ -648,24 +616,19 @@ MIT License
             time_str = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
             self.time_label.config(text=time_str)
             
-            # Update graph
             current_time = time.time() - self.session_start
             self.apm_history.append(self.current_apm)
             self.time_history.append(current_time)
             
-            # Update line data
             self.line.set_data(list(self.time_history), list(self.apm_history))
             
-            # Adjust y-axis if needed
             max_apm = max(self.apm_history) if self.apm_history else 100
-            y_max = max(100, (max_apm // 100 + 1) * 100)  # Round up to nearest 100
+            y_max = max(100, (max_apm // 100 + 1) * 100)
             self.ax.set_ylim(0, y_max)
             
-            # Adjust x-axis to show last 60 seconds
             x_min = max(0, current_time - 60)
             self.ax.set_xlim(x_min, current_time)
             
-            # Redraw canvas
             self.canvas.draw()
             
             self.write_to_files()
@@ -675,7 +638,6 @@ MIT License
     def write_to_files(self):
         """Write data to output files"""
         try:
-            # Custom TXT export
             txt_content = []
             if self.txt_settings['apm']:
                 txt_content.append(f"APM: {self.current_apm}")
@@ -694,7 +656,6 @@ MIT License
             with open(self.output_file, 'w', encoding='utf-8') as f:
                 f.write('\n'.join(txt_content))
             
-            # Complete JSON export
             data = {
                 "apm": self.current_apm,
                 "total_actions": self.total_actions,
@@ -751,10 +712,8 @@ MIT License
         self.current_apm = 0
         self.session_start = time.time()
         
-        # Clear pressed keys
         self.pressed_keys.clear()
         
-        # Clear graph data
         self.apm_history.clear()
         self.time_history.clear()
         self.line.set_data([], [])
@@ -762,7 +721,6 @@ MIT License
         self.ax.set_xlim(0, 60)
         self.canvas.draw()
         
-        # Reset labels
         self.apm_label.config(text="0")
         self.total_label.config(text="0")
         self.avg_apm_label.config(text="0")
