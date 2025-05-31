@@ -29,7 +29,7 @@ Version 1.0.0
 
 ### Installation
 
-1. Téléchargez la dernière version depuis [Releases](https://github.com/votre-username/apmlive/releases)
+1. Téléchargez la dernière version depuis [Releases](https://github.com/eraceo/apmlive/releases)
 2. Exécutez `APMLive_Setup.exe`
 3. Suivez les instructions d'installation
 4. Lancez APMLive depuis le menu démarrer
