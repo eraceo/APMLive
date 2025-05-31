@@ -572,14 +572,22 @@ MIT License
         button_frame = tk.Frame(controls_frame, bg=self.colors['bg_primary'])
         button_frame.pack()
         
+        def on_enter(e):
+            """Change cursor to hand2 when hovering over enabled buttons"""
+            if e.widget['state'] != 'disabled':
+                e.widget.config(cursor='hand2')
+        
+        def on_leave(e):
+            """Reset cursor when leaving buttons"""
+            e.widget.config(cursor='')
+        
         # Common button style
         button_style = {
             'font': ('Roboto', 11, 'bold'),
             'relief': tk.FLAT,
             'bd': 0,
             'padx': 25,
-            'pady': 12,
-            'cursor': 'hand2'
+            'pady': 12
         }
         
         # Start button
@@ -590,16 +598,20 @@ MIT License
                                      command=self.start_recording,
                                      **button_style)
         self.start_button.pack(side=tk.LEFT, padx=(0, 10))
+        self.start_button.bind('<Enter>', on_enter)
+        self.start_button.bind('<Leave>', on_leave)
         
         # Stop button
         self.stop_button = tk.Button(button_frame, text="STOP", 
-                                    bg=self.colors['danger'], 
-                                    fg='white',
+                                    bg=self.colors['bg_tertiary'], 
+                                    fg=self.colors['text_primary'],
                                     activebackground='#FF4081',
                                     command=self.stop_recording,
                                     state='disabled',
                                     **button_style)
         self.stop_button.pack(side=tk.LEFT, padx=(0, 10))
+        self.stop_button.bind('<Enter>', on_enter)
+        self.stop_button.bind('<Leave>', on_leave)
         
         # Reset button
         self.reset_button = tk.Button(button_frame, text="RESET", 
@@ -609,6 +621,8 @@ MIT License
                                      command=self.reset_data,
                                      **button_style)
         self.reset_button.pack(side=tk.LEFT)
+        self.reset_button.bind('<Enter>', on_enter)
+        self.reset_button.bind('<Leave>', on_leave)
     
     def create_footer(self):
         """
@@ -836,8 +850,8 @@ MIT License
             self.keyboard_listener.start()
             
             # Update UI state
-            self.start_button.config(state='disabled', bg=self.colors['bg_tertiary'])
-            self.stop_button.config(state='normal', bg=self.colors['danger'])
+            self.start_button.config(state='disabled', bg=self.colors['bg_tertiary'], cursor='')
+            self.stop_button.config(state='normal', bg=self.colors['danger'], cursor='hand2')
             self.status_label.config(text="RECORDING", fg=self.colors['success'])
             self.status_dot.config(fg=self.colors['success'])
             
@@ -857,8 +871,8 @@ MIT License
                 self.keyboard_listener.stop()
             
             # Update UI state
-            self.start_button.config(state='normal', bg=self.colors['success'])
-            self.stop_button.config(state='disabled', bg=self.colors['bg_tertiary'])
+            self.start_button.config(state='normal', bg=self.colors['success'], cursor='hand2')
+            self.stop_button.config(state='disabled', bg=self.colors['bg_tertiary'], cursor='')
             self.status_label.config(text="OFFLINE", fg=self.colors['text_secondary'])
             self.status_dot.config(fg=self.colors['danger'])
             
