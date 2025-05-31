@@ -125,6 +125,13 @@ class APMCalculator:
         self.root.configure(bg='#121212')  # Dark background
         self.root.resizable(False, False)
         
+        # Center window on screen
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        x = (screen_width - 600) // 2
+        y = (screen_height - 800) // 2
+        self.root.geometry(f"600x800+{x}+{y}")
+        
         # Define color scheme for the application
         self.colors = {
             'bg_primary': '#121212',      # Main dark background
