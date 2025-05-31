@@ -1,7 +1,7 @@
 # APMLive
 
 <div align="center">
-  <img src="resources/images/apmlive.ico" alt="APMLive Logo" width="400" height="400">
+  <img src="resources/images/apmlive.png" alt="APMLive Logo" width="400" height="400">
 </div>
 
 ## Français
