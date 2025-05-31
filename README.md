@@ -1,5 +1,9 @@
 # APMLive
 
+<div align="center">
+  <img src="resources/images/apmlive.ico" alt="APMLive Logo">
+</div>
+
 ## Français
 
 Calculateur d'APM (Actions Per Minute) pour les joueurs de jeux vidéo, streamers et créateurs de contenu.
