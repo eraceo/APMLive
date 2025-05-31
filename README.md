@@ -1,137 +1,125 @@
-# APMLive 🇫🇷 | 🇬🇧
+# APMLive
 
-[English version below | Version anglaise ci-dessous]
+## Français
 
-## 🇫🇷 Français
-
-Un calculateur d'APM (Actions Per Minute) moderne et élégant pour les joueurs de jeux vidéo, streamers et créateurs de contenu.
+Calculateur d'APM (Actions Per Minute) pour les joueurs de jeux vidéo, streamers et créateurs de contenu.
 
 Développé par erace
 Version 1.0.0
 
-![APMLive Interface](resources/images/image.png)
+### Fonctionnalités
 
-### 🌟 Fonctionnalités
-
-- Interface moderne et intuitive
+- Interface intuitive
 - Calcul en temps réel des APM
-- Statistiques détaillées :
+- Statistiques :
   - APM actuel
   - APM moyen
   - Actions par seconde
   - Temps de session
   - Total des actions
-- Export des données en format texte et JSON
-- Compatible avec OBS pour le streaming
-- Sauvegarde automatique des données
-- Installation facile via installateur Windows
+- Export des données (texte et JSON)
+- Compatible OBS
+- Sauvegarde automatique
+- Installation Windows
 
-### 📋 Prérequis
+### Prérequis
 
 - Windows 10 ou supérieur
-- Python 3.8+ (pour le développement uniquement)
+- Python 3.8+ (développement)
 
-### 🚀 Installation
+### Installation
 
-#### Pour les utilisateurs
-
-1. Téléchargez la dernière version de l'installateur depuis la section [Releases](https://github.com/votre-username/apmlive/releases)
+1. Téléchargez la dernière version depuis [Releases](https://github.com/votre-username/apmlive/releases)
 2. Exécutez `APMLive_Setup.exe`
 3. Suivez les instructions d'installation
-4. Lancez APMLive depuis le menu démarrer ou le bureau
+4. Lancez APMLive depuis le menu démarrer
 
-### 📊 Utilisation
+### Utilisation
 
 1. Lancez l'application
-2. Cliquez sur "START" pour commencer l'enregistrement
-3. Jouez normalement à votre jeu
-4. Les statistiques se mettront à jour en temps réel
-5. Cliquez sur "STOP" pour arrêter l'enregistrement
-6. Les données sont automatiquement sauvegardées dans `%LOCALAPPDATA%\APMLive`
+2. Cliquez sur "START" pour commencer
+3. Jouez normalement
+4. Les statistiques se mettent à jour en temps réel
+5. Cliquez sur "STOP" pour arrêter
+6. Données sauvegardées dans `%LOCALAPPDATA%\APMLive`
 
-### 🔧 Configuration
+### Configuration
 
-Les données sont sauvegardées dans :
-- `%LOCALAPPDATA%\APMLive\apm_data.txt` (format texte)
-- `%LOCALAPPDATA%\APMLive\apm_data.json` (format JSON)
+Données sauvegardées dans :
+- `%LOCALAPPDATA%\APMLive\apm_data.txt`
+- `%LOCALAPPDATA%\APMLive\apm_data.json`
 
-### 🤝 Contribution
+### Contribution
 
-Ce projet est développé par erace. Si vous souhaitez contribuer, n'hésitez pas à :
 1. Fork le projet
-2. Créer une branche pour votre fonctionnalité
-3. Commiter vos changements
-4. Pousser vers la branche
-5. Ouvrir une Pull Request
+2. Créez une branche
+3. Committez vos changements
+4. Poussez vers la branche
+5. Ouvrez une Pull Request
 
-### 📝 Licence
+### Licence
 
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+Licence MIT. Voir [LICENSE](LICENSE) pour plus de détails.
 
 ---
 
-## 🇬🇧 English
+## English
 
-A modern and elegant APM (Actions Per Minute) calculator for video game players, streamers, and content creators.
+APM (Actions Per Minute) calculator for video game players, streamers, and content creators.
 
 Developed by erace
 Version 1.0.0
 
-### 🌟 Features
+### Features
 
-- Modern and intuitive interface
+- Intuitive interface
 - Real-time APM calculation
-- Detailed statistics:
+- Statistics:
   - Current APM
   - Average APM
   - Actions per second
   - Session time
   - Total actions
-- Data export in text and JSON formats
-- OBS compatibility for streaming
-- Automatic data saving
-- Easy installation via Windows installer
+- Data export (text and JSON)
+- OBS compatibility
+- Automatic saving
+- Windows installation
 
-### 📋 Requirements
+### Requirements
 
 - Windows 10 or higher
-- Python 3.8+ (for development only)
+- Python 3.8+ (development)
 
-### 🚀 Installation
+### Installation
 
-#### For Users
-
-1. Download the latest installer version from the [Releases](https://github.com/votre-username/apmlive/releases) section
+1. Download latest version from [Releases](https://github.com/votre-username/apmlive/releases)
 2. Run `APMLive_Setup.exe`
-3. Follow the installation instructions
-4. Launch APMLive from the start menu or desktop
+3. Follow installation instructions
+4. Launch from start menu
 
-### 📊 Usage
+### Usage
 
-1. Launch the application
-2. Click "START" to begin recording
-3. Play your game normally
-4. Statistics will update in real-time
-5. Click "STOP" to stop recording
-6. Data is automatically saved in `%LOCALAPPDATA%\APMLive`
+1. Launch application
+2. Click "START" to begin
+3. Play normally
+4. Statistics update in real-time
+5. Click "STOP" to end
+6. Data saved in `%LOCALAPPDATA%\APMLive`
 
-### 🔧 Configuration
+### Configuration
 
-Data is saved in:
-- `%LOCALAPPDATA%\APMLive\apm_data.txt` (text format)
-- `%LOCALAPPDATA%\APMLive\apm_data.json` (JSON format)
+Data saved in:
+- `%LOCALAPPDATA%\APMLive\apm_data.txt`
+- `%LOCALAPPDATA%\APMLive\apm_data.json`
 
-### 🤝 Contributing
+### Contributing
 
-This project is developed by erace. If you'd like to contribute, feel free to:
 1. Fork the project
-2. Create a branch for your feature
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
+2. Create a branch
+3. Commit changes
+4. Push to branch
+5. Open Pull Request
 
-### 📝 License
+### License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-⭐ Don't forget to star the project if you like it! 
+MIT License. See [LICENSE](LICENSE) for details. 
