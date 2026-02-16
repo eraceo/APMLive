@@ -19,7 +19,7 @@ def setup_logger(name: str = "APMLive") -> logging.Logger:
     logger.setLevel(logging.DEBUG)
 
     # Prevent adding handlers multiple times
-    if logger.hasHandlers():
+    if logger.handlers:
         return logger
 
     # Formatters
