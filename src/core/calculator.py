@@ -6,7 +6,7 @@ Handles the core logic for tracking user actions and calculating APM/APS statist
 import time
 import threading
 from collections import deque
-from typing import Dict, Optional, Union, Any
+from typing import Dict, Optional, Union, Any, List, Callable
 from pynput import mouse, keyboard  # type: ignore
 
 
@@ -14,6 +14,7 @@ class APMCalculator:
     """
     Core logic for APM tracking.
     Handles input monitoring and APM calculations in a thread-safe manner.
+    Implements Observer pattern to notify listeners of updates.
     """
 
     def __init__(self, window_size: int = 60) -> None:
@@ -33,6 +34,30 @@ class APMCalculator:
         self.mouse_listener: Optional[mouse.Listener] = None
         self.keyboard_listener: Optional[keyboard.Listener] = None
 
+        # Observers
+        self._observers: List[Callable[[Dict[str, Any]], None]] = []
+        self._update_thread: Optional[threading.Thread] = None
+        self._stop_event = threading.Event()
+
+    def add_observer(self, callback: Callable[[Dict[str, Any]], None]) -> None:
+        """Register an observer callback."""
+        if callback not in self._observers:
+            self._observers.append(callback)
+
+    def remove_observer(self, callback: Callable[[Dict[str, Any]], None]) -> None:
+        """Unregister an observer callback."""
+        if callback in self._observers:
+            self._observers.remove(callback)
+
+    def _notify_observers(self) -> None:
+        """Notify all observers with current metrics."""
+        metrics = self.get_metrics()
+        for callback in self._observers:
+            try:
+                callback(metrics)
+            except Exception as e:
+                print(f"Error notifying observer: {e}")
+
     def start(self) -> None:
         """Start tracking inputs."""
         if self.running:
@@ -50,17 +75,32 @@ class APMCalculator:
         self.mouse_listener.start()
         self.keyboard_listener.start()
 
+        # Start update loop thread
+        self._stop_event.clear()
+        self._update_thread = threading.Thread(target=self._update_loop, daemon=True)
+        self._update_thread.start()
+
     def stop(self) -> None:
         """Stop tracking inputs."""
         if not self.running:
             return
 
         self.running = False
+        self._stop_event.set()
 
         if self.mouse_listener:
             self.mouse_listener.stop()
         if self.keyboard_listener:
             self.keyboard_listener.stop()
+
+        if self._update_thread:
+            self._update_thread.join(timeout=1.0)
+
+    def _update_loop(self) -> None:
+        """Background loop to calculate and notify metrics."""
+        while not self._stop_event.is_set():
+            self._notify_observers()
+            time.sleep(0.1)  # 100ms update rate
 
     def reset(self) -> None:
         """Reset all statistics."""

@@ -43,14 +43,14 @@ Mettre en place des garde-fous pour éviter les régressions.
     *   Code formaté avec `black`.
     *   Qualité validée avec `pylint` (Note: 9.80/10).
 
-## 4. Packaging et Distribution (À faire)
+## 4. Packaging et Distribution (Réalisé)
 
 Améliorer la façon dont l'application est construite et distribuée.
 
-*   [ ] **Gestion des Dépendances** :
+*   [x] **Gestion des Dépendances** :
     *   Figer les versions exactes dans `requirements.txt` (déjà fait, à maintenir).
 
-*   [ ] **Exécutable (PyInstaller)** :
+*   [x] **Exécutable (PyInstaller)** :
     *   Créer un fichier `.spec` personnalisé pour PyInstaller.
     *   Ajouter une icône et des métadonnées de version au binaire.
 
@@ -58,9 +58,30 @@ Améliorer la façon dont l'application est construite et distribuée.
 
 Suite à la refactorisation, voici les nouveaux points d'amélioration identifiés :
 
-*   **Gestion des Exceptions dans l'Exporter** :
-    *   Actuellement, `exporter.py` utilise `print()` en cas d'erreur. Il faudrait implémenter un module `logging` pour écrire les erreurs dans un fichier de log (ex: `%LOCALAPPDATA%\APMLive\error.log`).
-*   **Tests d'Intégration UI** :
-    *   Il n'y a pas de tests pour vérifier que l'interface graphique se lance correctement ou que les boutons fonctionnent. Bien que difficile avec Tkinter, on peut vérifier que les callbacks sont bien appelés.
-*   **Design Pattern Observer** :
-    *   Actuellement, `MainWindow` interroge `Calculator` toutes les 100ms (Polling). Une approche plus événementielle (Observer Pattern) pourrait être plus propre, bien que le polling soit standard avec Tkinter.
+*   [x] **Gestion des Exceptions (Logging)** :
+    *   Actuellement, `exporter.py` utilise `print()` en cas d'erreur.
+    *   Il faut implémenter un module `logging` pour écrire les erreurs dans un fichier de log (ex: `%LOCALAPPDATA%\APMLive\error.log`).
+
+*   [x] **Tests d'Intégration UI** :
+    *   Ajouter des tests vérifiant le lancement correct de l'interface et le binding des callbacks, même sans interaction humaine.
+
+*   [x] **Design Pattern Observer** :
+    *   Remplacer le polling (100ms) de `MainWindow` par une approche événementielle si la charge CPU devient un problème (actuellement acceptable pour Tkinter).
+
+## 6. Recommandations Techniques Approfondies (Analyse v3.0)
+
+Pour garantir la scalabilité et la robustesse en production :
+
+*   [ ] **Optimisation de l'Export (Threading)** :
+    *   **Problème** : `Exporter.export` crée un nouveau `threading.Thread` à chaque appel. Risque de saturation si la fréquence est élevée.
+    *   **Solution** : Implémenter un pattern **Producer-Consumer** avec une `queue.Queue`. Le thread principal dépose les métriques, un thread worker unique (démon) les consomme et écrit sur le disque.
+
+*   [ ] **Configuration Unifiée (pyproject.toml)** :
+    *   Centraliser la configuration des outils (Black, Pylint, MyPy, Pytest) dans un fichier standard `pyproject.toml` à la racine du projet, remplaçant les configurations implicites.
+
+*   [ ] **Intégration Continue (CI)** :
+    *   Mettre en place un pipeline (GitHub Actions ou GitLab CI) pour exécuter automatiquement :
+        1.  Installation des dépendances.
+        2.  Linting (Black/Pylint).
+        3.  Tests unitaires (Pytest).
+        4.  Vérification de type (MyPy).

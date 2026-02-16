@@ -7,6 +7,9 @@ import os
 import json
 import threading
 from typing import Dict, Any, Optional
+from src.utils.logger import setup_logger
+
+logger = setup_logger("Exporter")
 
 
 class DataExporter:
@@ -55,7 +58,7 @@ class DataExporter:
                     saved_settings = json.load(f)
                     self.txt_settings.update(saved_settings.get("txt_export", {}))
         except (IOError, json.JSONDecodeError) as e:
-            print(f"Error loading settings: {e}")
+            logger.error(f"Error loading settings: {e}")
 
     def save_settings(self) -> None:
         """Save current export settings to JSON file."""
@@ -64,7 +67,7 @@ class DataExporter:
             with open(self.settings_file, "w", encoding="utf-8") as f:
                 json.dump(settings_data, f, indent=2)
         except (IOError, TypeError) as e:
-            print(f"Error saving settings: {e}")
+            logger.error(f"Error saving settings: {e}")
 
     def update_settings(self, new_settings: Dict[str, bool]) -> None:
         """Update settings and save to disk."""
@@ -118,5 +121,4 @@ class DataExporter:
                 f.write(content)
 
         except (IOError, TypeError, ValueError) as e:
-            # In a real app, use logging instead of print
-            print(f"Export error: {e}")
+            logger.error(f"Export error: {e}")

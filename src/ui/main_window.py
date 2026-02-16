@@ -7,7 +7,7 @@ import time
 import tkinter as tk
 from tkinter import ttk
 from collections import deque
-from typing import Deque
+from typing import Deque, Dict, Any
 
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -33,6 +33,10 @@ class MainWindow:
         self.calculator = calculator
         self.exporter = DataExporter()
 
+        # Register Observers
+        self.calculator.add_observer(self.on_metrics_update)
+        self.calculator.add_observer(self.exporter.export)
+
         # Window Setup
         self.root.title("APMLive")
         self.root.geometry("600x800")
@@ -53,9 +57,7 @@ class MainWindow:
         self._create_graph()
         self._create_controls()
 
-        # Update Loop
         self.running: bool = False
-        self._update_loop()
 
     def _center_window(self) -> None:
         screen_width = self.root.winfo_screenwidth()
@@ -237,40 +239,35 @@ class MainWindow:
             self.start_btn.config(text="START TRACKING", bg=AppColors.ACCENT)
             self.status_label.config(text="PAUSED", fg=AppColors.DANGER)
 
-    def _update_loop(self) -> None:
-        if self.running:
-            metrics = self.calculator.get_metrics()
+    def on_metrics_update(self, metrics: Dict[str, Any]) -> None:
+        """Callback received from APMCalculator when metrics are updated."""
+        # Schedule UI update on the main thread
+        self.root.after(0, lambda: self._update_view(metrics))
 
-            # Update Labels
-            self.apm_label.config(text=f"{int(metrics.get('current_apm', 0))}")
-            self.total_label.config(text=f"{metrics.get('total_actions', 0)}")
-            self.avg_label.config(text=f"{metrics.get('avg_apm', 0)}")
+    def _update_view(self, metrics: Dict[str, Any]) -> None:
+        """Update UI elements with new metrics."""
+        # Update Labels
+        self.apm_label.config(text=f"{int(metrics.get('current_apm', 0))}")
+        self.total_label.config(text=f"{metrics.get('total_actions', 0)}")
+        self.avg_label.config(text=f"{metrics.get('avg_apm', 0)}")
 
-            # Format time
-            total_seconds = int(metrics.get("session_time", 0))
-            hours = total_seconds // 3600
-            minutes = (total_seconds % 3600) // 60
-            seconds = total_seconds % 60
-            self.time_label.config(text=f"{hours:02d}:{minutes:02d}:{seconds:02d}")
+        # Format time
+        total_seconds = int(metrics.get("session_time", 0))
+        hours = total_seconds // 3600
+        minutes = (total_seconds % 3600) // 60
+        seconds = total_seconds % 60
+        self.time_label.config(text=f"{hours:02d}:{minutes:02d}:{seconds:02d}")
 
-            # Update Graph
-            current_time = float(total_seconds)
-            self.apm_history.append(float(metrics.get("current_apm", 0)))
-            self.time_history.append(current_time)
+        # Update Graph
+        current_time = float(total_seconds)
+        self.apm_history.append(float(metrics.get("current_apm", 0)))
+        self.time_history.append(current_time)
 
-            self.line.set_data(list(self.time_history), list(self.apm_history))
+        self.line.set_data(list(self.time_history), list(self.apm_history))
 
-            # Auto-scale axes
-            if self.apm_history:
-                self.ax.set_ylim(0, max(100, max(self.apm_history) * 1.2))
-                self.ax.set_xlim(max(0.0, current_time - 60), current_time)
+        # Auto-scale axes
+        if self.apm_history:
+            self.ax.set_ylim(0, max(100, max(self.apm_history) * 1.2))
+            self.ax.set_xlim(max(0.0, current_time - 60), current_time)
 
-            self.canvas.draw()
-
-            # Export data
-            # Add timestamp to metrics for export
-            metrics["timestamp"] = time.time()
-            self.exporter.export(metrics)
-
-        # Schedule next update (100ms for smooth UI)
-        self.root.after(100, self._update_loop)
+        self.canvas.draw()

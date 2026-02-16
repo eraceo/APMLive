@@ -1,3 +1,5 @@
-pynput>=1.7.6
-pyinstaller>=6.3.0
-matplotlib>=3.7.1 
+pynput==1.8.1
+pyinstaller==6.19.0
+matplotlib==3.10.8
+numpy==2.4.2
+Pillow==12.1.1
