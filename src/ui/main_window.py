@@ -3,8 +3,8 @@ Main Window Module
 Handles the main GUI logic and user interaction.
 """
 
-import time
 import tkinter as tk
+import logging
 from tkinter import ttk
 from typing import Dict, Any
 
@@ -13,6 +13,8 @@ from src.core.exporter import DataExporter
 from src.ui.settings_window import SettingsWindow
 from src.core.calculator import APMCalculator
 from src.ui.graph_widget import GraphWidget
+
+logger = logging.getLogger("APMLive.UI")
 
 
 class MainWindow:
@@ -216,22 +218,28 @@ class MainWindow:
     def on_metrics_update(self, metrics: Dict[str, Any]) -> None:
         """Callback received from APMCalculator when metrics are updated."""
         # Schedule UI update on the main thread
-        self.root.after(0, lambda: self._update_view(metrics))
+        try:
+            self.root.after(0, lambda: self._update_view(metrics))
+        except Exception as e:
+            logger.error(f"Failed to schedule UI update: {e}", exc_info=True)
 
     def _update_view(self, metrics: Dict[str, Any]) -> None:
         """Update UI elements with new metrics."""
-        # Update Labels
-        self.apm_label.config(text=f"{int(metrics.get('current_apm', 0))}")
-        self.total_label.config(text=f"{metrics.get('total_actions', 0)}")
-        self.avg_label.config(text=f"{metrics.get('avg_apm', 0)}")
+        try:
+            # Update Labels
+            self.apm_label.config(text=f"{int(metrics.get('current_apm', 0))}")
+            self.total_label.config(text=f"{metrics.get('total_actions', 0)}")
+            self.avg_label.config(text=f"{metrics.get('avg_apm', 0)}")
 
-        # Format time
-        total_seconds = int(metrics.get("session_time", 0))
-        hours = total_seconds // 3600
-        minutes = (total_seconds % 3600) // 60
-        seconds = total_seconds % 60
-        self.time_label.config(text=f"{hours:02d}:{minutes:02d}:{seconds:02d}")
+            # Format time
+            total_seconds = int(metrics.get("session_time", 0))
+            hours = total_seconds // 3600
+            minutes = (total_seconds % 3600) // 60
+            seconds = total_seconds % 60
+            self.time_label.config(text=f"{hours:02d}:{minutes:02d}:{seconds:02d}")
 
-        # Update Graph
-        current_apm = float(metrics.get("current_apm", 0))
-        self.graph.update_data(current_apm)
+            # Update Graph
+            current_apm = float(metrics.get("current_apm", 0))
+            self.graph.update_data(current_apm)
+        except Exception as e:
+            logger.error(f"Error updating UI view: {e}", exc_info=True)

@@ -10,6 +10,11 @@ from typing import Dict, Optional, Union, Any, List, Callable
 from pynput import mouse, keyboard  # type: ignore
 
 
+from src.utils.logger import setup_logger
+
+logger = setup_logger()
+
+
 class APMCalculator:
     """
     Core logic for APM tracking.
@@ -51,12 +56,19 @@ class APMCalculator:
 
     def _notify_observers(self) -> None:
         """Notify all observers with current metrics."""
-        metrics = self.get_metrics()
-        for callback in self._observers:
-            try:
-                callback(metrics)
-            except Exception as e:
-                print(f"Error notifying observer: {e}")
+        try:
+            metrics = self.get_metrics()
+            for callback in self._observers:
+                try:
+                    callback(metrics)
+                except Exception as e:
+                    logger.error(
+                        f"Error notifying observer {callback}: {e}", exc_info=True
+                    )
+        except Exception as e:
+            logger.error(
+                f"Critical error during metrics calculation: {e}", exc_info=True
+            )
 
     def start(self) -> None:
         """Start tracking inputs."""
@@ -98,9 +110,14 @@ class APMCalculator:
 
     def _update_loop(self) -> None:
         """Background loop to calculate and notify metrics."""
+        logger.info("Starting update loop thread")
         while not self._stop_event.is_set():
-            self._notify_observers()
+            try:
+                self._notify_observers()
+            except Exception as e:
+                logger.error(f"Unexpected error in update loop: {e}", exc_info=True)
             time.sleep(0.1)  # 100ms update rate
+        logger.info("Update loop thread stopped")
 
     def reset(self) -> None:
         """Reset all statistics."""
@@ -129,12 +146,18 @@ class APMCalculator:
 
     def _on_click(self, _x: int, _y: int, _button: Any, pressed: bool) -> None:
         """Mouse click handler."""
-        if pressed:
-            self._record_action()
+        try:
+            if pressed:
+                self._record_action()
+        except Exception as e:
+            logger.error(f"Error in mouse listener: {e}", exc_info=True)
 
     def _on_press(self, _key: Any) -> None:
         """Keyboard press handler."""
-        self._record_action()
+        try:
+            self._record_action()
+        except Exception as e:
+            logger.error(f"Error in keyboard listener: {e}", exc_info=True)
 
     def get_metrics(self) -> Dict[str, Union[float, int]]:
         """
@@ -164,7 +187,7 @@ class APMCalculator:
             total_actions_snapshot = self.total_actions
 
         # --- Calculations performed without holding the lock ---
-        
+
         recent_actions_count = len(actions_snapshot)
 
         # Calculate APS (Actions Per Second) - last 10 seconds
