@@ -27,22 +27,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pyinstaller
+          pip install python-semantic-release pyinstaller
 
       - name: Python Semantic Release
-        id: semantic_release
-        uses: python-semantic-release/python-semantic-release@v8.3.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-        
-      - name: Build Executable
-        if: steps.semantic_release.outputs.released == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          pyinstaller apmlive.spec
-
-      - name: Upload Release Artifacts
-        if: steps.semantic_release.outputs.released == 'true'
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dist/APMLive.exe
-          tag_name: ${{ steps.semantic_release.outputs.tag }}
+          semantic-release version
+          semantic-release publish
