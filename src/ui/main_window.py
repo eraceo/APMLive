@@ -221,7 +221,7 @@ class MainWindow:
         try:
             self.root.after(0, lambda: self._update_view(metrics))
         except Exception as e:
-            logger.error(f"Failed to schedule UI update: {e}", exc_info=True)
+            logger.error("Failed to schedule UI update: %s", e, exc_info=True)
 
     def _update_view(self, metrics: Dict[str, Any]) -> None:
         """Update UI elements with new metrics."""
@@ -242,4 +242,4 @@ class MainWindow:
             current_apm = float(metrics.get("current_apm", 0))
             self.graph.update_data(current_apm)
         except Exception as e:
-            logger.error(f"Error updating UI view: {e}", exc_info=True)
+            logger.error("Error updating UI view: %s", e, exc_info=True)

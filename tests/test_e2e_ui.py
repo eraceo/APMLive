@@ -20,7 +20,11 @@ def e2e_app():
     Handles setup and teardown of the application lifecycle.
     """
     # Create a real Tkinter root
-    root = tk.Tk()
+    try:
+        root = tk.Tk()
+    except tk.TclError as e:
+        pytest.skip(f"Skipping E2E UI tests: Tcl/Tk not initialized correctly ({e})")
+
     root.withdraw()
 
     # Create a thread-safe queue for callbacks to handle threaded updates

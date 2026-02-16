@@ -50,7 +50,7 @@ def main() -> None:
         # Start Application
         root.mainloop()
     except Exception as e:
-        logger.critical(f"Fatal error in main loop: {e}", exc_info=True)
+        logger.critical("Fatal error in main loop: %s", e, exc_info=True)
         sys.exit(1)
     finally:
         logger.info("Application stopped")

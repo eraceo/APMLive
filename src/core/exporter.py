@@ -58,7 +58,7 @@ class DataExporter:
                     saved_settings = json.load(f)
                     self.txt_settings.update(saved_settings.get("txt_export", {}))
         except (IOError, json.JSONDecodeError) as e:
-            logger.error(f"Error loading settings: {e}")
+            logger.error("Error loading settings: %s", e)
 
     def save_settings(self) -> None:
         """Save current export settings to JSON file."""
@@ -67,7 +67,7 @@ class DataExporter:
             with open(self.settings_file, "w", encoding="utf-8") as f:
                 json.dump(settings_data, f, indent=2)
         except (IOError, TypeError) as e:
-            logger.error(f"Error saving settings: {e}")
+            logger.error("Error saving settings: %s", e)
 
     def update_settings(self, new_settings: Dict[str, bool]) -> None:
         """Update settings and save to disk."""
@@ -121,4 +121,4 @@ class DataExporter:
                 f.write(content)
 
         except (IOError, TypeError, ValueError) as e:
-            logger.error(f"Export error: {e}")
+            logger.error("Export error: %s", e)

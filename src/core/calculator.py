@@ -63,11 +63,11 @@ class APMCalculator:
                     callback(metrics)
                 except Exception as e:
                     logger.error(
-                        f"Error notifying observer {callback}: {e}", exc_info=True
+                        "Error notifying observer %s: %s", callback, e, exc_info=True
                     )
         except Exception as e:
             logger.error(
-                f"Critical error during metrics calculation: {e}", exc_info=True
+                "Critical error during metrics calculation: %s", e, exc_info=True
             )
 
     def start(self) -> None:
@@ -115,7 +115,7 @@ class APMCalculator:
             try:
                 self._notify_observers()
             except Exception as e:
-                logger.error(f"Unexpected error in update loop: {e}", exc_info=True)
+                logger.error("Unexpected error in update loop: %s", e, exc_info=True)
             time.sleep(0.1)  # 100ms update rate
         logger.info("Update loop thread stopped")
 
@@ -150,14 +150,14 @@ class APMCalculator:
             if pressed:
                 self._record_action()
         except Exception as e:
-            logger.error(f"Error in mouse listener: {e}", exc_info=True)
+            logger.error("Error in mouse listener: %s", e, exc_info=True)
 
     def _on_press(self, _key: Any) -> None:
         """Keyboard press handler."""
         try:
             self._record_action()
         except Exception as e:
-            logger.error(f"Error in keyboard listener: {e}", exc_info=True)
+            logger.error("Error in keyboard listener: %s", e, exc_info=True)
 
     def get_metrics(self) -> Dict[str, Union[float, int]]:
         """
