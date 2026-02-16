@@ -121,6 +121,7 @@ class APMCalculator:
 
             # Optimization: Remove old actions immediately to prevent memory growth
             # We keep a bit more than window_size just in case, but strict cleanup happens in calculate
+            # This ensures we never grow indefinitely even if get_metrics is not called
             while (
                 self.actions and current_time - self.actions[0] > self.window_size + 10
             ):
@@ -152,22 +153,28 @@ class APMCalculator:
         current_time = time.time()
         session_duration = current_time - self.session_start
 
+        # Snapshot data within lock to minimize contention with input threads
         with self._lock:
             # Clean up old actions for accurate sliding window calculation
             while self.actions and current_time - self.actions[0] > self.window_size:
                 self.actions.popleft()
 
-            recent_actions_count = len(self.actions)
+            # Copy data for calculation outside lock (fast C-level copy)
+            actions_snapshot = list(self.actions)
             total_actions_snapshot = self.total_actions
 
-            # Calculate APS (Actions Per Second) - last 10 seconds
-            # We iterate backwards to be faster
-            aps_actions = 0
-            for timestamp in reversed(self.actions):
-                if current_time - timestamp <= 10:
-                    aps_actions += 1
-                else:
-                    break
+        # --- Calculations performed without holding the lock ---
+        
+        recent_actions_count = len(actions_snapshot)
+
+        # Calculate APS (Actions Per Second) - last 10 seconds
+        # We iterate backwards to be faster
+        aps_actions = 0
+        for timestamp in reversed(actions_snapshot):
+            if current_time - timestamp <= 10:
+                aps_actions += 1
+            else:
+                break
 
         # Calculate Current APM
         time_window = min(self.window_size, session_duration)

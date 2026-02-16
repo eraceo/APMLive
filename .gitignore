@@ -64,3 +64,5 @@ APMLive.exe
 Roboto/ 
 
 IMPROVEMENT_PLAN.md
+
+tests/benchmark.py

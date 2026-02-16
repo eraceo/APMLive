@@ -6,20 +6,13 @@ Handles the main GUI logic and user interaction.
 import time
 import tkinter as tk
 from tkinter import ttk
-from collections import deque
-from typing import Deque, Dict, Any
-
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import matplotlib  # type: ignore
+from typing import Dict, Any
 
 from src.utils.config import AppColors, AppFonts
 from src.core.exporter import DataExporter
 from src.ui.settings_window import SettingsWindow
 from src.core.calculator import APMCalculator
-
-# Ensure we use the correct backend for Tkinter integration
-matplotlib.use("TkAgg")
+from src.ui.graph_widget import GraphWidget
 
 
 class MainWindow:
@@ -45,10 +38,6 @@ class MainWindow:
 
         # Center window
         self._center_window()
-
-        # Graph Data
-        self.apm_history: Deque[float] = deque(maxlen=60)
-        self.time_history: Deque[float] = deque(maxlen=60)
 
         # UI Components
         self._setup_styles()
@@ -186,21 +175,9 @@ class MainWindow:
             font=("Roboto", 9, "bold"),
         ).pack(pady=(10, 5))
 
-        self.fig = plt.Figure(figsize=(6, 2.5), dpi=100)
-        self.fig.patch.set_facecolor(AppColors.BG_SECONDARY)
-
-        self.ax = self.fig.add_subplot(111)
-        self.ax.set_facecolor(AppColors.BG_SECONDARY)
-        self.ax.tick_params(colors=AppColors.TEXT_SECONDARY, labelsize=8)
-
-        for spine in self.ax.spines.values():
-            spine.set_color(AppColors.BORDER)
-
-        (self.line,) = self.ax.plot([], [], color=AppColors.ACCENT, linewidth=2)
-
-        self.canvas = FigureCanvasTkAgg(self.fig, master=graph_frame)
-        self.canvas.draw()
-        self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+        # Replaced Matplotlib with custom Canvas GraphWidget
+        self.graph = GraphWidget(graph_frame, height=200, bg=AppColors.BG_SECONDARY)
+        self.graph.pack(fill=tk.BOTH, expand=True)
 
     def _create_controls(self) -> None:
         control_frame = tk.Frame(self.root, bg=AppColors.BG_PRIMARY)
@@ -228,10 +205,7 @@ class MainWindow:
             self.status_label.config(text="LIVE", fg=AppColors.SUCCESS)
 
             # Clear graph
-            self.apm_history.clear()
-            self.time_history.clear()
-            self.line.set_data([], [])
-            self.canvas.draw()
+            self.graph.clear()
         else:
             # Stop
             self.running = False
@@ -259,15 +233,5 @@ class MainWindow:
         self.time_label.config(text=f"{hours:02d}:{minutes:02d}:{seconds:02d}")
 
         # Update Graph
-        current_time = float(total_seconds)
-        self.apm_history.append(float(metrics.get("current_apm", 0)))
-        self.time_history.append(current_time)
-
-        self.line.set_data(list(self.time_history), list(self.apm_history))
-
-        # Auto-scale axes
-        if self.apm_history:
-            self.ax.set_ylim(0, max(100, max(self.apm_history) * 1.2))
-            self.ax.set_xlim(max(0.0, current_time - 60), current_time)
-
-        self.canvas.draw()
+        current_apm = float(metrics.get("current_apm", 0))
+        self.graph.update_data(current_apm)
