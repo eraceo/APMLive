@@ -34,6 +34,9 @@ class DataExporter:
         self.json_file: str = os.path.join(self.data_dir, "apm_data.json")
         self.settings_file: str = os.path.join(self.data_dir, "settings.json")
 
+        # Thread management
+        self._export_thread: Optional[threading.Thread] = None
+
         # Default settings
         self.txt_settings: Dict[str, bool] = {
             "apm": True,
@@ -79,8 +82,15 @@ class DataExporter:
         Write metrics to files based on configuration.
         Should be called periodically.
         """
+        # Prevent thread explosion: only start if previous write is done
+        if self._export_thread and self._export_thread.is_alive():
+            return
+
         # We run this in a thread to avoid blocking the UI/Calculator if I/O is slow
-        threading.Thread(target=self._write_files, args=(metrics,), daemon=True).start()
+        self._export_thread = threading.Thread(
+            target=self._write_files, args=(metrics,), daemon=True
+        )
+        self._export_thread.start()
 
     def _write_files(self, metrics: Dict[str, Any]) -> None:
         try:
