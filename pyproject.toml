@@ -28,6 +28,20 @@ dev = [
     "types-Pillow",
 ]
 
+[tool.semantic_release]
+version_variable = [
+    "pyproject.toml:version",
+    "src/app.manifest:version",
+]
+version_toml = [
+    "pyproject.toml:project.version"
+]
+version_source = "tag"
+commit_version_number = true
+upload_to_pypi = false
+upload_to_release = true
+build_command = "pip install pyinstaller && pyinstaller apmlive.spec"
+
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "-ra -q --cov=src --cov-report=term-missing"
