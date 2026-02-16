@@ -21,7 +21,7 @@ class GraphWidget(tk.Canvas):
         width: int = 600,
         height: int = 200,
         bg: str = AppColors.BG_SECONDARY,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> None:
         super().__init__(
             master, width=width, height=height, bg=bg, highlightthickness=0, **kwargs
@@ -32,7 +32,9 @@ class GraphWidget(tk.Canvas):
         self.bg_color: str = bg
 
         # Data storage
-        self.max_points: int = 60  # Store 60 seconds of data (assuming ~1 update/sec) or more if higher freq
+        self.max_points: int = (
+            60  # Store 60 seconds of data (assuming ~1 update/sec) or more if higher freq
+        )
         self.data: Deque[float] = deque(
             maxlen=600
         )  # Store more points for smoothness if needed

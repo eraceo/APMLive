@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "apmlive"
-version = "1.0.0"
+version = "2.0.0"
 description = "A real-time APM (Actions Per Minute) tracker for Windows."
 authors = [
     {name = "Your Name", email = "your.email@example.com"},

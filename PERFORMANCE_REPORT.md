@@ -1,28 +1,28 @@
-# Rapport de Performance APMLive
+# APMLive Performance Report
 
-## Synthèse
-Suite aux optimisations majeures (Canvas natif + Snapshot Pattern), le moteur APMCalculator démontre une stabilité exceptionnelle sous charge extrême.
+## Executive Summary
+Following major optimizations (Native Canvas + Snapshot Pattern), the APMCalculator engine demonstrates exceptional stability under extreme load.
 
-## Comparatif Avant/Après Optimisation
+## Optimization Benchmark Comparison
 
-| Métrique | Benchmark Précédent | Nouveau Benchmark | Variation | Analyse |
+| Metric | Previous Benchmark | New Benchmark | Variation | Analysis |
 | :--- | :--- | :--- | :--- | :--- |
-| **Input Recording** (Actions/sec) | 4,021,346 | **4,193,591** | 🟢 +4.3% (Plus rapide) | Le thread d'enregistrement est moins souvent bloqué car le calcul ne détient plus le verrou. |
-| **Metrics Calculation** (Latence) | 1.18 µs | **2.65 µs** | 🟡 +1.47 µs (Négligeable) | Légère hausse due à la copie mémoire du snapshot (coût unique pour gain de thread-safety). Reste invisible (< 3µs). |
-| **Observer Overhead** (Latence) | 0.27 µs | **~0.00 µs** | 🟢 Indétectable | Le découplage via `GraphWidget` supprime les goulots d'étranglement de l'UI. |
-| **Thread Contention** (Actions/sec) | 4,017,687 | **3,895,988** | ⚪ -3.0% (Stable) | Variation normale due au context switching du thread de copie. |
+| **Input Recording** (Actions/sec) | 4,021,346 | **4,193,591** | 🟢 +4.3% (Faster) | Recording thread is blocked less often as calculation no longer holds the lock. |
+| **Metrics Calculation** (Latency) | 1.18 µs | **2.65 µs** | 🟡 +1.47 µs (Negligible) | Slight increase due to snapshot memory copy (one-time cost for thread-safety gain). Remains invisible (< 3µs). |
+| **Observer Overhead** (Latency) | 0.27 µs | **~0.00 µs** | 🟢 Undetectable | Decoupling via `GraphWidget` removes UI bottlenecks. |
+| **Thread Contention** (Actions/sec) | 4,017,687 | **3,895,988** | ⚪ -3.0% (Stable) | Normal variation due to copy thread context switching. |
 
-## Détail des Optimisations Techniques
+## Technical Optimization Details
 
-### 1. Pattern Snapshot (Thread Safety)
-- **Problème précédent :** Le calcul des métriques verrouillait (`Lock`) la liste des actions pendant toute la durée des opérations mathématiques (boucles, divisions).
-- **Solution :** On verrouille uniquement le temps de copier la liste (`list(self.actions)`).
-- **Résultat :** Le thread d'input (clavier/souris) n'est jamais bloqué par un calcul long. La latence perçue par l'utilisateur est nulle.
+### 1. Snapshot Pattern (Thread Safety)
+- **Previous Issue:** Metric calculation locked (`Lock`) the action list during the entire mathematical operation (loops, divisions).
+- **Solution:** Lock only during list copy (`list(self.actions)`).
+- **Result:** Input thread (keyboard/mouse) is never blocked by long calculations. User-perceived latency is zero.
 
-### 2. Moteur Graphique Vectoriel (Rendering)
-- **Problème précédent :** Matplotlib redessinait l'intégralité du graphique à chaque frame, consommant inutilement du CPU.
-- **Solution :** Implémentation de `GraphWidget` (basé sur `tkinter.Canvas`).
-- **Résultat :** Rendu fluide à 60 FPS+ avec une consommation CPU négligeable.
+### 2. Vector Graphics Engine (Rendering)
+- **Previous Issue:** Matplotlib redrew the entire graph every frame, consuming unnecessary CPU.
+- **Solution:** Implementation of `GraphWidget` (based on `tkinter.Canvas`).
+- **Result:** Smooth 60 FPS+ rendering with negligible CPU consumption.
 
 ## Conclusion
-Le projet atteint le niveau de qualité **5 étoiles** pour la performance et les algorithmes. L'architecture est désormais capable de supporter des charges théoriques de plusieurs milliers d'actions par seconde sans dégradation de l'expérience utilisateur.
+The project achieves **5-star** quality for performance and algorithms. The architecture is now capable of supporting theoretical loads of thousands of actions per second without degrading user experience.
