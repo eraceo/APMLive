@@ -21,7 +21,7 @@ wheels/
 *.egg
 
 # Fichiers PyInstaller
-*.spec
+# *.spec
 build/
 dist/
 
