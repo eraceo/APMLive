@@ -30,8 +30,23 @@ jobs:
           pip install python-semantic-release pyinstaller
 
       - name: Python Semantic Release
+        id: release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
           semantic-release version
           semantic-release publish
+          echo "tag=$(semantic-release version --print-tag)" >> $GITHUB_OUTPUT
+
+      - name: Build Executable
+        run: |
+          pyinstaller apmlive.spec
+
+      - name: Upload Release Artifacts
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/APMLive.exe
+          tag_name: ${{ steps.release.outputs.tag }}
+          token: ${{ secrets.GITHUB_TOKEN }}
